@@ -1,5 +1,5 @@
 module.exports = {
-  entry: "./client/js/index.js",
+  entry: "./client/js/index.jsx",
   output: {
       path: "./client/js",
       filename: "bundle.js"
@@ -7,11 +7,11 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.js?$/,
+        test: /\.jsx?$/,
         exclude: /(node_modules)/,
         loader: 'babel',
         query: {
-          presets: ['es2015']
+          presets: ['react', 'es2015', 'stage-0']
         }
       }
     ]
