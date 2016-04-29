@@ -4,6 +4,7 @@
   "description": "PouchDB Clerk Example App",
   "main": "index.js",
   "scripts": {
+    "build": "npm run bundle",
     "bundle": "webpack",
     "bundle-watch": "webpack --progress --colors --watch",
     "static-server": "static client",
