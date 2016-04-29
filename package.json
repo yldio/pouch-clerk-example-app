@@ -8,7 +8,7 @@
     "bundle": "webpack",
     "bundle-watch": "webpack --progress --colors --watch",
     "static-server": "static client",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npm run static-server"
   },
   "repository": {
     "type": "git",
