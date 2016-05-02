@@ -1,17 +1,23 @@
+import React from 'react'
 import {render} from 'react-dom'
 import {Provider} from 'react-redux'
-import Router from 'react-router'
-import getRoutes from './routes/index.jsx'
 import configureStore from './store'
 
 const store = configureStore()
 
+import {Router, Route, hashHistory} from 'react-router'
+import App from './components/App.jsx'
+import NewSession from './components/NewSession.jsx'
+
 const router = (
-  <Router>
-    {getRoutes(store)}
+  <Router history={hashHistory}>
+    <Route path="/" component={App}>
+      <Route path="/session/new" component={NewSession} />
+    </Route>
   </Router>)
 
 render(
-  <Provider store={store}>
+  (<Provider store={store}>
     {router}
-  </Provider>)
+  </Provider>),
+  document.getElementById('root'))
