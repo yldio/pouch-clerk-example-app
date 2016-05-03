@@ -1,12 +1,13 @@
 import React from 'react'
-import {Link} from 'react-router'
+import {IndexLink} from 'react-router'
 
 export default React.createClass({
   render() {
     return (
       <div>
-        <h1>Home</h1>
-        <p><Link to="/session/new">Log in</Link></p>
+        <div class="navbar">
+          <IndexLink to="/">Home</IndexLink>
+        </div>
         {this.props.children}
       </div>
     )

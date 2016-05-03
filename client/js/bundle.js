@@ -64,9 +64,21 @@
 
 	var _App2 = _interopRequireDefault(_App);
 
+	var _Home = __webpack_require__(372);
+
+	var _Home2 = _interopRequireDefault(_Home);
+
 	var _NewSession = __webpack_require__(363);
 
 	var _NewSession2 = _interopRequireDefault(_NewSession);
+
+	var _NewTransaction = __webpack_require__(370);
+
+	var _NewTransaction2 = _interopRequireDefault(_NewTransaction);
+
+	var _Transaction = __webpack_require__(371);
+
+	var _Transaction2 = _interopRequireDefault(_Transaction);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -74,11 +86,14 @@
 
 	var router = _react2.default.createElement(
 	  _reactRouter.Router,
-	  { history: _reactRouter.hashHistory },
+	  { history: _reactRouter.browserHistory },
 	  _react2.default.createElement(
 	    _reactRouter.Route,
 	    { path: '/', component: _App2.default },
-	    _react2.default.createElement(_reactRouter.Route, { path: '/session/new', component: _NewSession2.default })
+	    _react2.default.createElement(_reactRouter.IndexRoute, { component: _Home2.default }),
+	    _react2.default.createElement(_reactRouter.Route, { path: '/session/new', component: _NewSession2.default }),
+	    _react2.default.createElement(_reactRouter.Route, { path: '/transactions/new', component: _NewTransaction2.default }),
+	    _react2.default.createElement(_reactRouter.Route, { path: '/transactions/:id', component: _Transaction2.default })
 	  )
 	);
 
@@ -53795,17 +53810,12 @@
 	      'div',
 	      null,
 	      _react3.default.createElement(
-	        'h1',
-	        null,
-	        'Home'
-	      ),
-	      _react3.default.createElement(
-	        'p',
-	        null,
+	        'div',
+	        { 'class': 'navbar' },
 	        _react3.default.createElement(
-	          _reactRouter.Link,
-	          { to: '/session/new' },
-	          'Log in'
+	          _reactRouter.IndexLink,
+	          { to: '/' },
+	          'Home'
 	        )
 	      ),
 	      this.props.children
@@ -54890,6 +54900,183 @@
 	    return ReactClass;
 	  };
 	}
+
+/***/ },
+/* 370 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _redboxReact2 = __webpack_require__(364);
+
+	var _redboxReact3 = _interopRequireDefault(_redboxReact2);
+
+	var _react2 = __webpack_require__(1);
+
+	var _react3 = _interopRequireDefault(_react2);
+
+	var _reactTransformCatchErrors3 = __webpack_require__(369);
+
+	var _reactTransformCatchErrors4 = _interopRequireDefault(_reactTransformCatchErrors3);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var _components = {
+	  _component: {}
+	};
+
+	var _reactTransformCatchErrors2 = (0, _reactTransformCatchErrors4.default)({
+	  filename: '/Users/pedroteixeira/projects/pouch-clerk-example-app/client/js/components/NewTransaction.jsx',
+	  components: _components,
+	  locals: [],
+	  imports: [_react3.default, _redboxReact3.default]
+	});
+
+	function _wrapComponent(id) {
+	  return function (Component) {
+	    return _reactTransformCatchErrors2(Component, id);
+	  };
+	}
+
+	exports.default = _wrapComponent('_component')(_react3.default.createClass({
+	  render: function render() {
+	    return _react3.default.createElement(
+	      'div',
+	      null,
+	      _react3.default.createElement(
+	        'h1',
+	        null,
+	        'New Transaction'
+	      )
+	    );
+	  }
+	}));
+
+/***/ },
+/* 371 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _redboxReact2 = __webpack_require__(364);
+
+	var _redboxReact3 = _interopRequireDefault(_redboxReact2);
+
+	var _react2 = __webpack_require__(1);
+
+	var _react3 = _interopRequireDefault(_react2);
+
+	var _reactTransformCatchErrors3 = __webpack_require__(369);
+
+	var _reactTransformCatchErrors4 = _interopRequireDefault(_reactTransformCatchErrors3);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var _components = {
+	  _component: {}
+	};
+
+	var _reactTransformCatchErrors2 = (0, _reactTransformCatchErrors4.default)({
+	  filename: '/Users/pedroteixeira/projects/pouch-clerk-example-app/client/js/components/Transaction.jsx',
+	  components: _components,
+	  locals: [],
+	  imports: [_react3.default, _redboxReact3.default]
+	});
+
+	function _wrapComponent(id) {
+	  return function (Component) {
+	    return _reactTransformCatchErrors2(Component, id);
+	  };
+	}
+
+	exports.default = _wrapComponent('_component')(_react3.default.createClass({
+	  render: function render() {
+	    return _react3.default.createElement(
+	      'div',
+	      null,
+	      _react3.default.createElement(
+	        'h1',
+	        null,
+	        'Transaction #',
+	        this.props.id
+	      )
+	    );
+	  }
+	}));
+
+/***/ },
+/* 372 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _redboxReact2 = __webpack_require__(364);
+
+	var _redboxReact3 = _interopRequireDefault(_redboxReact2);
+
+	var _react2 = __webpack_require__(1);
+
+	var _react3 = _interopRequireDefault(_react2);
+
+	var _reactTransformCatchErrors3 = __webpack_require__(369);
+
+	var _reactTransformCatchErrors4 = _interopRequireDefault(_reactTransformCatchErrors3);
+
+	var _reactRouter = __webpack_require__(307);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var _components = {
+	  _component: {}
+	};
+
+	var _reactTransformCatchErrors2 = (0, _reactTransformCatchErrors4.default)({
+	  filename: '/Users/pedroteixeira/projects/pouch-clerk-example-app/client/js/components/Home.jsx',
+	  components: _components,
+	  locals: [],
+	  imports: [_react3.default, _redboxReact3.default]
+	});
+
+	function _wrapComponent(id) {
+	  return function (Component) {
+	    return _reactTransformCatchErrors2(Component, id);
+	  };
+	}
+
+	exports.default = _wrapComponent('_component')(_react3.default.createClass({
+	  render: function render() {
+	    return _react3.default.createElement(
+	      'div',
+	      null,
+	      _react3.default.createElement(
+	        'h1',
+	        null,
+	        'Home'
+	      ),
+	      _react3.default.createElement(
+	        'p',
+	        null,
+	        _react3.default.createElement(
+	          _reactRouter.Link,
+	          { to: '/session/new' },
+	          'Log in'
+	        )
+	      )
+	    );
+	  }
+	}));
 
 /***/ }
 /******/ ]);
