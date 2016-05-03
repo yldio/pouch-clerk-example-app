@@ -42,7 +42,6 @@
     "webpack": "^1.13.0"
   },
   "dependencies": {
-    "compression": "^1.6.1",
     "express": "^4.13.4"
   }
 }

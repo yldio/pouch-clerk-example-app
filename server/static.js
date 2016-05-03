@@ -1,14 +1,14 @@
 // server.js
 var express = require('express')
 var path = require('path')
-var compression = require('compression')
+// var compression = require('compression')
 
 var app = express()
 
 var base = path.join(__dirname, '..', 'client');
 
 // use compression
-app.use(compression)
+// app.use(compression)
 
 // serve our static stuff like index.css
 app.use(express.static(base))

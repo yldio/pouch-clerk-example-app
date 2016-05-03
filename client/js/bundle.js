@@ -53827,7 +53827,7 @@
 /* 363 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -53852,7 +53852,7 @@
 	};
 
 	var _reactTransformCatchErrors2 = (0, _reactTransformCatchErrors4.default)({
-	  filename: "/Users/pedroteixeira/projects/pouch-clerk-example-app/client/js/components/NewSession.jsx",
+	  filename: '/Users/pedroteixeira/projects/pouch-clerk-example-app/client/js/components/NewSession.jsx',
 	  components: _components,
 	  locals: [],
 	  imports: [_react3.default, _redboxReact3.default]
@@ -53864,21 +53864,31 @@
 	  };
 	}
 
-	exports.default = _wrapComponent("_component")(_react3.default.createClass({
+	exports.default = _wrapComponent('_component')(_react3.default.createClass({
+
+	  // ask for `router` from context
+	  contextTypes: {
+	    router: _react3.default.PropTypes.object
+	  },
+
+	  handleSubmit: function handleSubmit(event) {
+	    event.preventDefault();
+	    this.context.router.push('/transactions/new');
+	  },
 	  render: function render() {
 	    return _react3.default.createElement(
-	      "div",
+	      'div',
 	      null,
 	      _react3.default.createElement(
-	        "h1",
+	        'h1',
 	        null,
-	        "Log in"
+	        'Log in'
 	      ),
 	      _react3.default.createElement(
-	        "form",
-	        null,
-	        _react3.default.createElement("input", { name: "username" }),
-	        _react3.default.createElement("input", { type: "submit", value: "Log in" })
+	        'form',
+	        { onSubmit: this.handleSubmit },
+	        _react3.default.createElement('input', { name: 'username' }),
+	        _react3.default.createElement('input', { type: 'submit', value: 'Log in' })
 	      )
 	    );
 	  }
