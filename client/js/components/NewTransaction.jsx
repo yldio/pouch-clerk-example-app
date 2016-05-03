@@ -1,10 +1,11 @@
 import React from 'react'
+import {PageHeader} from 'react-bootstrap'
 
 export default React.createClass({
   render() {
     return (
       <div>
-        <h1>New Transaction</h1>
+        <PageHeader>New Transaction</PageHeader>
       </div>
     )
   }
