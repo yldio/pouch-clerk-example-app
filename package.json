@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "npm run bundle",
-    "bundle": "webpack",
+    "bundle": "webpack --progress --colors",
     "bundle-watch": "webpack --progress --colors --watch",
     "static-server": "node server/static",
     "start": "npm run static-server"

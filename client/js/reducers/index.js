@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux'
-import todos from './todos'
+import transactions from './transactions'
+import user from './user'
 import syncState from './syncState'
 
 export default combineReducers({
-  todos, syncState
+  transactions, user, syncState
 })
