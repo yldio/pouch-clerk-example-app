@@ -21,6 +21,7 @@ export default function(session) {
 
     const dbName = user + '-transactions';
     const db = DB(dbName)
+    console.log('db:', db);
 
     mw = PouchMiddleware({
       path: '/transactions',

@@ -21843,6 +21843,7 @@
 
 	    var dbName = user + '-transactions';
 	    var db = (0, _db.get)(dbName);
+	    console.log('db:', db);
 
 	    mw = (0, _pouchReduxMiddleware2.default)({
 	      path: '/transactions',
