@@ -21642,7 +21642,10 @@
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	var initialState = {
-	  user: undefined,
+	  session: {
+	    state: 'logged out',
+	    user: undefined
+	  },
 	  transactions: [],
 	  syncState: {
 	    text: 'unknown'
@@ -21727,9 +21730,9 @@
 
 	var _transactions2 = _interopRequireDefault(_transactions);
 
-	var _user = __webpack_require__(193);
+	var _session = __webpack_require__(193);
 
-	var _user2 = _interopRequireDefault(_user);
+	var _session2 = _interopRequireDefault(_session);
 
 	var _syncState = __webpack_require__(194);
 
@@ -21738,7 +21741,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = (0, _redux.combineReducers)({
-	  transactions: _transactions2.default, user: _user2.default, syncState: _syncState2.default
+	  transactions: _transactions2.default, session: _session2.default, syncState: _syncState2.default
 	});
 
 /***/ },
@@ -21811,7 +21814,10 @@
 	var _ActionTypes = __webpack_require__(189);
 
 	var initialState = {
-	  user: undefined
+	  session: {
+	    state: 'logged out',
+	    user: undefined
+	  }
 	};
 
 	function syncState() {
@@ -21819,8 +21825,23 @@
 	  var action = arguments[1];
 
 	  switch (action.type) {
+	    case _ActionTypes.START_SESSION:
+	      return {
+	        state: 'logging in',
+	        user: undefined
+	      };
+
 	    case _ActionTypes.SET_SESSION_USER:
-	      return action.user;
+	      return {
+	        state: 'logged in',
+	        user: action.user
+	      };
+
+	    case _ActionTypes.END_SESSION:
+	      return {
+	        state: 'logged out',
+	        user: undefined
+	      };
 
 	    default:
 	      return state;
@@ -48686,8 +48707,8 @@
 	      return function (action) {
 	        var returnValue = next(action);
 	        var newState = options.getState();
-	        if (newState.user !== user) {
-	          user = newState.user;
+	        if (newState.session.user !== user) {
+	          user = newState.session.user;
 	          if (user) {
 	            session.emit('new', user);
 	          } else {

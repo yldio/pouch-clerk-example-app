@@ -7,7 +7,10 @@ import PouchLoginMiddleware from './middlewares/pouch-login'
 import EventEmitter from 'events'
 
 const initialState = {
-  user: undefined,
+  session: {
+    state: 'logged out',
+    user: undefined,
+  },
   transactions: [],
   syncState: {
     text: 'unknown'

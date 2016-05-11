@@ -6,8 +6,8 @@ export default function(session) {
       return function(action) {
         const returnValue = next(action)
         const newState = options.getState()
-        if (newState.user !== user) {
-          user = newState.user
+        if (newState.session.user !== user) {
+          user = newState.session.user
           if (user) {
             session.emit('new', user);
           } else {

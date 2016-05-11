@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux'
 import transactions from './transactions'
-import user from './user'
+import session from './session'
 import syncState from './syncState'
 
 export default combineReducers({
-  transactions, user, syncState
+  transactions, session, syncState
 })
