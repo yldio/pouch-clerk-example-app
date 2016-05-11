@@ -17,19 +17,16 @@ export default function(session) {
 
   session.on('new', function(user) {
 
-    console.log('new session', user)
-
     const dbName = user + '-transactions';
     const db = DB(dbName)
-    console.log('db:', db);
 
     mw = PouchMiddleware({
       path: '/transactions',
       db,
       actions: {
         remove: doc => store.dispatch({type: types.DELETE_TRANSACTION, id: doc._id}),
-        insert: doc => store.dispatch({type: types.INSERT_TRANSACTION, todo: doc}),
-        update: doc => store.dispatch({type: types.UPDATE_TRANSACTION, todo: doc}),
+        insert: doc => store.dispatch({type: types.INSERT_TRANSACTION, transaction: doc}),
+        update: doc => store.dispatch({type: types.UPDATE_TRANSACTION, transaction: doc}),
       }
     })(options)(next)
 

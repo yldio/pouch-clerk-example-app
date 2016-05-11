@@ -12,8 +12,7 @@ class NewSession extends Component {
     console.log('username:', username)
     console.log(this)
     if (username) {
-      this.props.actions.setUser(username)
-      this.context.router.push('/transactions/new')
+      this.props.actions.startSession({user: username})
     }
   }
 

@@ -21617,6 +21617,10 @@
 
 	var _redux = __webpack_require__(173);
 
+	var _reduxThunk = __webpack_require__(642);
+
+	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
+
 	var _reducers = __webpack_require__(190);
 
 	var _reducers2 = _interopRequireDefault(_reducers);
@@ -21647,7 +21651,7 @@
 
 	function configureStore() {
 	  var session = new _events2.default();
-	  var middleware = (0, _redux.applyMiddleware)((0, _pouchSyncTransactions2.default)(session), (0, _pouchLogin2.default)(session));
+	  var middleware = (0, _redux.applyMiddleware)(_reduxThunk2.default, (0, _pouchSyncTransactions2.default)(session), (0, _pouchLogin2.default)(session));
 	  var createStoreWithMiddleware = middleware(_redux.createStore);
 	  return createStoreWithMiddleware(_reducers2.default, initialState);
 	}
@@ -21661,17 +21665,22 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	// ERROR
 	var ERROR = exports.ERROR = 'ERROR';
 
-	var SET_USER = exports.SET_USER = 'SET_USER';
-	var UN_USER = exports.UN_USER = 'UNSET_USER';
+	// SESSION
+	var START_SESSION = exports.START_SESSION = 'START_SESSION';
+	var SET_SESSION_USER = exports.SET_SESSION_USER = 'SET_SESSION_USER';
+	var END_SESSION = exports.END_SESSION = 'END_SESSION';
 
+	// TRANSACTIONS
 	var ADD_TRANSACTION = exports.ADD_TRANSACTION = 'ADD_TRANSACTION';
 	var INSERT_TRANSACTION = exports.INSERT_TRANSACTION = 'INSERT_TRANSACTION';
 	var DELETE_TRANSACTION = exports.DELETE_TRANSACTION = 'DELETE_TRANSACTION';
 	var EDIT_TRANSACTION = exports.EDIT_TRANSACTION = 'EDIT_TRANSACTION';
 	var UPDATE_TRANSACTION = exports.UPDATE_TRANSACTION = 'UPDATE_TRANSACTION';
 
+	// SYNC STATE
 	var SET_SYNC_STATE = exports.SET_SYNC_STATE = 'SET_SYNC_STATE';
 
 /***/ },
@@ -21782,7 +21791,7 @@
 	  var action = arguments[1];
 
 	  switch (action.type) {
-	    case _ActionTypes.SET_USER:
+	    case _ActionTypes.SET_SESSION_USER:
 	      return action.user;
 
 	    default:
@@ -21839,11 +21848,8 @@
 
 	  session.on('new', function (user) {
 
-	    console.log('new session', user);
-
 	    var dbName = user + '-transactions';
 	    var db = (0, _db.get)(dbName);
-	    console.log('db:', db);
 
 	    mw = (0, _pouchReduxMiddleware2.default)({
 	      path: '/transactions',
@@ -21853,10 +21859,10 @@
 	          return store.dispatch({ type: _ActionTypes2.default.DELETE_TRANSACTION, id: doc._id });
 	        },
 	        insert: function insert(doc) {
-	          return store.dispatch({ type: _ActionTypes2.default.INSERT_TRANSACTION, todo: doc });
+	          return store.dispatch({ type: _ActionTypes2.default.INSERT_TRANSACTION, transaction: doc });
 	        },
 	        update: function update(doc) {
-	          return store.dispatch({ type: _ActionTypes2.default.UPDATE_TRANSACTION, todo: doc });
+	          return store.dispatch({ type: _ActionTypes2.default.UPDATE_TRANSACTION, transaction: doc });
 	        }
 	      }
 	    })(options)(next);
@@ -36361,7 +36367,7 @@
 	function get(databaseName) {
 	  var database = databases[databaseName];
 	  if (!database) {
-	    database = databases[databaseName] = new _pouchdb2.default(database);
+	    database = databases[databaseName] = new _pouchdb2.default(databaseName);
 	  }
 	  return database;
 	}
@@ -74297,8 +74303,7 @@
 	      console.log('username:', username);
 	      console.log(this);
 	      if (username) {
-	        this.props.actions.setUser(username);
-	        this.context.router.push('/transactions/new');
+	        this.props.actions.startSession({ user: username });
 	      }
 	    }
 	  }, {
@@ -74355,8 +74360,8 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.setUser = setUser;
-	exports.unsetUser = unsetUser;
+	exports.startSession = startSession;
+	exports.endSession = endSession;
 
 	var _ActionTypes = __webpack_require__(189);
 
@@ -74364,12 +74369,19 @@
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-	function setUser(user) {
-	  return { type: types.SET_USER, user: user };
+	function startSession(credentials) {
+	  return function (dispatch) {
+	    dispatch({ type: types.START_SESSION, credentials: credentials });
+
+	    // pretend we're logging in
+	    setTimeout(function () {
+	      dispatch({ type: types.SET_SESSION_USER, user: credentials.user });
+	    }, 1000);
+	  };
 	}
 
-	function unsetUser() {
-	  return { type: types.UNSET_USER };
+	function endSession() {
+	  return { type: types.END_SESSION };
 	}
 
 /***/ },
@@ -74484,6 +74496,34 @@
 	    );
 	  }
 	}));
+
+/***/ },
+/* 642 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	exports.__esModule = true;
+	function createThunkMiddleware(extraArgument) {
+	  return function (_ref) {
+	    var dispatch = _ref.dispatch;
+	    var getState = _ref.getState;
+	    return function (next) {
+	      return function (action) {
+	        if (typeof action === 'function') {
+	          return action(dispatch, getState, extraArgument);
+	        }
+
+	        return next(action);
+	      };
+	    };
+	  };
+	}
+
+	var thunk = createThunkMiddleware();
+	thunk.withExtraArgument = createThunkMiddleware;
+
+	exports['default'] = thunk;
 
 /***/ }
 /******/ ]);

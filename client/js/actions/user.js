@@ -1,9 +1,16 @@
 import * as types from '../constants/ActionTypes'
 
-export function setUser(user) {
-  return { type: types.SET_USER, user }
+export function startSession(credentials) {
+  return function(dispatch) {
+    dispatch({ type: types.START_SESSION, credentials });
+
+    // pretend we're logging in
+    setTimeout(function() {
+      dispatch({ type: types.SET_SESSION_USER, user: credentials.user });
+    }, 1000);
+  }
 }
 
-export function unsetUser() {
-  return { type: types.UNSET_USER }
+export function endSession() {
+  return { type: types.END_SESSION }
 }
