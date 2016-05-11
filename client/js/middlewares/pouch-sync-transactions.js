@@ -3,7 +3,7 @@
 import PouchSync from 'pouch-websocket-sync'
 import PouchMiddleware from 'pouch-redux-middleware'
 import {get as DB} from '../db';
-import types from '../constants/ActionTypes'
+import * as types from '../constants/ActionTypes'
 
 const syncEvents = ['change', 'paused', 'active', 'denied', 'complete', 'error'];
 const clientEvents = ['connect', 'disconnect', 'reconnect'];
@@ -24,9 +24,9 @@ export default function(session) {
       path: '/transactions',
       db,
       actions: {
-        remove: doc => store.dispatch({type: types.DELETE_TRANSACTION, id: doc._id}),
-        insert: doc => store.dispatch({type: types.INSERT_TRANSACTION, transaction: doc}),
-        update: doc => store.dispatch({type: types.UPDATE_TRANSACTION, transaction: doc}),
+        remove: doc => options.dispatch({type: types.DELETE_TRANSACTION, id: doc._id}),
+        insert: doc => options.dispatch({type: types.INSERT_TRANSACTION, transaction: doc}),
+        update: doc => options.dispatch({type: types.UPDATE_TRANSACTION, transaction: doc}),
       }
     })(options)(next)
 
@@ -43,13 +43,13 @@ export default function(session) {
 
     syncEvents.forEach(function(event) {
       sync.on(event, function() {
-        store.dispatch({type: types.SET_SYNC_STATE, text: event})
+        options.dispatch({type: types.SET_SYNC_STATE, text: event})
       })
     })
 
     clientEvents.forEach(function(event) {
       syncClient.on(event, function() {
-        store.dispatch({type: types.SET_SYNC_STATE, text: event})
+        options.dispatch({type: types.SET_SYNC_STATE, text: event})
       })
     })
   })
