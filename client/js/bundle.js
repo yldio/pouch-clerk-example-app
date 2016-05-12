@@ -72,11 +72,11 @@
 
 	var _NewSession2 = _interopRequireDefault(_NewSession);
 
-	var _NewTransaction = __webpack_require__(641);
+	var _NewTransaction = __webpack_require__(640);
 
 	var _NewTransaction2 = _interopRequireDefault(_NewTransaction);
 
-	var _Transaction = __webpack_require__(642);
+	var _Transaction = __webpack_require__(641);
 
 	var _Transaction2 = _interopRequireDefault(_Transaction);
 
@@ -74302,13 +74302,15 @@
 
 	var _reactRedux = __webpack_require__(166);
 
-	var _user = __webpack_require__(640);
+	var _user = __webpack_require__(642);
 
 	var UserActions = _interopRequireWildcard(_user);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -74338,24 +74340,31 @@
 	var NewSession = _wrapComponent('NewSession')(function (_Component) {
 	  _inherits(NewSession, _Component);
 
-	  function NewSession() {
+	  function NewSession(props) {
 	    _classCallCheck(this, NewSession);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(NewSession).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(NewSession).call(this, props));
+
+	    _this.state = { username: null };
+	    return _this;
 	  }
 
 	  _createClass(NewSession, [{
+	    key: 'handleInputChange',
+	    value: function handleInputChange(event) {
+	      console.log('input change');
+	      this.setState(_defineProperty({}, event.target.name, event.target.value));
+	    }
+	  }, {
 	    key: 'handleSubmit',
 	    value: function handleSubmit(event) {
 	      var actions = this.props.actions;
+	      var history = this.context.history;
 
 	      event.preventDefault();
-	      var username = event.target.children[0].value;
-	      console.log('username:', username);
-	      console.log(this);
-	      if (username) {
-	        this.props.actions.startSession({ user: username });
-	      }
+	      this.props.actions.startSession(this.state, function () {
+	        history.pushState({}, '/transactions/new');
+	      });
 	    }
 	  }, {
 	    key: 'render',
@@ -74370,9 +74379,18 @@
 	        ),
 	        _react3.default.createElement(
 	          'form',
-	          { onSubmit: this.handleSubmit.bind(this) },
-	          _react3.default.createElement('input', { name: 'username' }),
-	          _react3.default.createElement('input', { type: 'submit', value: 'Log in' })
+	          {
+	            onSubmit: this.handleSubmit.bind(this),
+	            onChange: this.handleInputChange.bind(this)
+	          },
+	          _react3.default.createElement('input', { type: 'email', name: 'username' }),
+	          _react3.default.createElement(
+	            'button',
+	            { type: 'submit',
+	              className: 'pure-button pure-button-primary'
+	            },
+	            'Login'
+	          )
 	        )
 	      );
 	    }
@@ -74385,7 +74403,8 @@
 
 
 	NewSession.contextTypes = {
-	  router: _react2.PropTypes.object
+	  router: _react2.PropTypes.object,
+	  history: _react2.PropTypes.object.isRequired
 	};
 
 	function mapStateToProps(state) {
@@ -74404,39 +74423,6 @@
 
 /***/ },
 /* 640 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.startSession = startSession;
-	exports.endSession = endSession;
-
-	var _ActionTypes = __webpack_require__(189);
-
-	var types = _interopRequireWildcard(_ActionTypes);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function startSession(credentials) {
-	  return function (dispatch) {
-	    dispatch({ type: types.START_SESSION, credentials: credentials });
-
-	    // pretend we're logging in
-	    setTimeout(function () {
-	      dispatch({ type: types.SET_SESSION_USER, user: credentials.user });
-	    }, 1000);
-	  };
-	}
-
-	function endSession() {
-	  return { type: types.END_SESSION };
-	}
-
-/***/ },
-/* 641 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -74493,7 +74479,7 @@
 	}));
 
 /***/ },
-/* 642 */
+/* 641 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -74547,6 +74533,41 @@
 	    );
 	  }
 	}));
+
+/***/ },
+/* 642 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.startSession = startSession;
+	exports.endSession = endSession;
+
+	var _ActionTypes = __webpack_require__(189);
+
+	var types = _interopRequireWildcard(_ActionTypes);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function startSession(form, cb) {
+	  console.log('start session:', form);
+	  return function (dispatch) {
+	    dispatch({ type: types.START_SESSION, form: form });
+
+	    // pretend we're logging in
+	    setTimeout(function () {
+	      dispatch({ type: types.SET_SESSION_USER, user: form.username });
+	      if (cb) cb();
+	    }, 1000);
+	  };
+	}
+
+	function endSession() {
+	  return { type: types.END_SESSION };
+	}
 
 /***/ }
 /******/ ]);

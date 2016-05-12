@@ -5,24 +5,39 @@ import * as UserActions from '../actions/user'
 
 class NewSession extends Component {
 
+  constructor (props) {
+    super(props)
+    this.state = { username: null }
+  }
+
+  handleInputChange (event) {
+    console.log('input change');
+    this.setState({
+      [event.target.name]: event.target.value
+    })
+  }
+
   handleSubmit(event) {
     const { actions } = this.props
+    const { history } = this.context
     event.preventDefault()
-    const username = event.target.children[0].value
-    console.log('username:', username)
-    console.log(this)
-    if (username) {
-      this.props.actions.startSession({user: username})
-    }
+    this.props.actions.startSession(this.state, () => {
+      history.pushState({}, '/transactions/new')
+    })
   }
 
   render() {
     return (
       <div>
         <h1>Log in</h1>
-        <form onSubmit={this.handleSubmit.bind(this)}>
-          <input name="username"></input>
-          <input type="submit" value="Log in"></input>
+        <form
+          onSubmit={::this.handleSubmit}
+          onChange={::this.handleInputChange}
+          >
+          <input type="email" name="username"></input>
+          <button type="submit"
+            className="pure-button pure-button-primary"
+            >Login</button>
         </form>
       </div>
     )
@@ -31,7 +46,8 @@ class NewSession extends Component {
 
 // ask for `router` from context
 NewSession.contextTypes = {
-  router: PropTypes.object
+  router: PropTypes.object,
+  history: PropTypes.object.isRequired,
 }
 
 function mapStateToProps(state) {
