@@ -12,19 +12,19 @@ export default function syncState(state = initialState, action) {
     case START_SESSION:
       return {
         state: 'logging in',
-        user: undefined,
+        username: undefined,
       }
 
     case SET_SESSION_USER:
       return {
         state: 'logged in',
-        user: action.user,
+        username: action.username,
       }
 
     case END_SESSION:
       return {
         state: 'logged out',
-        user: undefined,
+        username: undefined,
       }
 
     default:

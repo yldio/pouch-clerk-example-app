@@ -7,7 +7,7 @@ export function startSession(form, cb) {
 
     // pretend we're logging in
     setTimeout(() => {
-      dispatch({ type: types.SET_SESSION_USER, user: form.username });
+      dispatch({ type: types.SET_SESSION_USER, username: form.username });
       if (cb) cb();
     }, 1000);
   }

@@ -19,10 +19,10 @@ class NewSession extends Component {
 
   handleSubmit(event) {
     const { actions } = this.props
-    const { history } = this.context
+    const { router } = this.context
     event.preventDefault()
     this.props.actions.startSession(this.state, () => {
-      history.pushState({}, '/transactions/new')
+      router.push({}, '/transactions/new')
     })
   }
 
@@ -46,13 +46,12 @@ class NewSession extends Component {
 
 // ask for `router` from context
 NewSession.contextTypes = {
-  router: PropTypes.object,
-  history: PropTypes.object.isRequired,
+  router: PropTypes.object
 }
 
 function mapStateToProps(state) {
   return {
-    user: state.user,
+    username: state.username,
   }
 }
 

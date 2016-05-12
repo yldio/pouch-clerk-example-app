@@ -9,7 +9,7 @@ import EventEmitter from 'events'
 const initialState = {
   session: {
     state: 'logged out',
-    user: undefined,
+    username: undefined,
   },
   transactions: [],
   syncState: {
