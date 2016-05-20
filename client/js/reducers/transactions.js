@@ -7,9 +7,8 @@ export default function transactions(state = initialState, action) {
     case ADD_TRANSACTION:
       return [
         {
-          _id: id(),
-          completed: false,
-          text: action.text
+          _id: action.id,
+          completed: false
         },
         ...state
       ]

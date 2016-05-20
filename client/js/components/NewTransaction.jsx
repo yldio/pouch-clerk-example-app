@@ -1,12 +1,46 @@
-import React from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import React, { Component, PropTypes } from 'react'
+import * as TransactionActions from '../actions/transactions'
 import {PageHeader} from 'react-bootstrap'
 
-export default React.createClass({
+class NewTransaction extends Component {
+
+  beginTransaction() {
+    const { router } = this.context
+    this.props.actions.addTransaction((id) => {
+      router.push({}, `/transactions/{id}`)
+    })
+  }
+
   render() {
     return (
       <div>
         <PageHeader>New Transaction</PageHeader>
+        <button onClick={::this.beginTransaction}>Begin Transaction</button>
       </div>
     )
   }
-})
+}
+
+// ask for `router` from context
+NewTransaction.contextTypes = {
+  router: PropTypes.object
+}
+
+function mapStateToProps(state) {
+  return {
+    username: state.username,
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(TransactionActions, dispatch)
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(NewTransaction)

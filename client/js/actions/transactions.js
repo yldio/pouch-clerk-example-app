@@ -1,7 +1,10 @@
 import * as types from '../constants/ActionTypes'
+import * as DB from '../db'
 
-export function addTransaction(text) {
-  return { type: types.ADD_TRANSACTION, text }
+export function addTransaction(cb) {
+  const id = Date.now().toString()
+  if (cb) { cb(id) }
+  return { type: types.ADD_TRANSACTION, id }
 }
 
 export function deleteTransaction(id) {

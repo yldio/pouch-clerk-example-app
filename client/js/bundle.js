@@ -21768,9 +21768,8 @@
 	  switch (action.type) {
 	    case _ActionTypes.ADD_TRANSACTION:
 	      return [{
-	        _id: id(),
-	        completed: false,
-	        text: action.text
+	        _id: action.id,
+	        completed: false
 	      }].concat(_toConsumableArray(state));
 
 	    case _ActionTypes.INSERT_TRANSACTION:
@@ -55381,12 +55380,32 @@
 
 	var _reactTransformCatchErrors4 = _interopRequireDefault(_reactTransformCatchErrors3);
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _redux = __webpack_require__(173);
+
+	var _reactRedux = __webpack_require__(166);
+
+	var _transactions = __webpack_require__(643);
+
+	var TransactionActions = _interopRequireWildcard(_transactions);
+
 	var _reactBootstrap = __webpack_require__(378);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 	var _components = {
-	  _component: {}
+	  NewTransaction: {
+	    displayName: 'NewTransaction'
+	  }
 	};
 
 	var _reactTransformCatchErrors2 = (0, _reactTransformCatchErrors4.default)({
@@ -55402,19 +55421,67 @@
 	  };
 	}
 
-	exports.default = _wrapComponent('_component')(_react3.default.createClass({
-	  render: function render() {
-	    return _react3.default.createElement(
-	      'div',
-	      null,
-	      _react3.default.createElement(
-	        _reactBootstrap.PageHeader,
-	        null,
-	        'New Transaction'
-	      )
-	    );
+	var NewTransaction = _wrapComponent('NewTransaction')(function (_Component) {
+	  _inherits(NewTransaction, _Component);
+
+	  function NewTransaction() {
+	    _classCallCheck(this, NewTransaction);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(NewTransaction).apply(this, arguments));
 	  }
-	}));
+
+	  _createClass(NewTransaction, [{
+	    key: 'beginTransaction',
+	    value: function beginTransaction() {
+	      var router = this.context.router;
+
+	      this.props.actions.addTransaction(function (id) {
+	        router.push({}, '/transactions/{id}');
+	      });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react3.default.createElement(
+	        'div',
+	        null,
+	        _react3.default.createElement(
+	          _reactBootstrap.PageHeader,
+	          null,
+	          'New Transaction'
+	        ),
+	        _react3.default.createElement(
+	          'button',
+	          { onClick: this.beginTransaction.bind(this) },
+	          'Begin Transaction'
+	        )
+	      );
+	    }
+	  }]);
+
+	  return NewTransaction;
+	}(_react2.Component));
+
+	// ask for `router` from context
+
+
+	NewTransaction.contextTypes = {
+	  router: _react2.PropTypes.object
+	};
+
+	function mapStateToProps(state) {
+	  return {
+	    username: state.username
+	  };
+	}
+
+	function mapDispatchToProps(dispatch) {
+	  return {
+	    actions: (0, _redux.bindActionCreators)(TransactionActions, dispatch)
+	  };
+	}
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(NewTransaction);
 
 /***/ },
 /* 378 */
@@ -74708,6 +74775,45 @@
 	}
 
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(NavBar);
+
+/***/ },
+/* 643 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.addTransaction = addTransaction;
+	exports.deleteTransaction = deleteTransaction;
+	exports.editTransaction = editTransaction;
+
+	var _ActionTypes = __webpack_require__(189);
+
+	var types = _interopRequireWildcard(_ActionTypes);
+
+	var _db = __webpack_require__(301);
+
+	var DB = _interopRequireWildcard(_db);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function addTransaction(cb) {
+	  var id = Date.now().toString();
+	  if (cb) {
+	    cb(id);
+	  }
+	  return { type: types.ADD_TRANSACTION, id: id };
+	}
+
+	function deleteTransaction(id) {
+	  return { type: types.DELETE_TRANSACTION, id: id };
+	}
+
+	function editTransaction(id, text) {
+	  return { type: types.EDIT_TRANSACTION, id: id, text: text };
+	}
 
 /***/ }
 /******/ ]);
