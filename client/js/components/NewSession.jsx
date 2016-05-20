@@ -22,7 +22,7 @@ class NewSession extends Component {
     const { router } = this.context
     event.preventDefault()
     this.props.actions.startSession(this.state, () => {
-      router.push({}, '/transactions/new')
+      router.push({pathname: '/transactions/new'})
     })
   }
 

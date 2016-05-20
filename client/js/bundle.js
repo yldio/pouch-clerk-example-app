@@ -55230,7 +55230,7 @@
 
 	      event.preventDefault();
 	      this.props.actions.startSession(this.state, function () {
-	        router.push({}, '/transactions/new');
+	        router.push({ pathname: '/transactions/new' });
 	      });
 	    }
 	  }, {
@@ -55432,11 +55432,13 @@
 
 	  _createClass(NewTransaction, [{
 	    key: 'beginTransaction',
-	    value: function beginTransaction() {
-	      var router = this.context.router;
+	    value: function beginTransaction(event) {
+	      var _this2 = this;
 
+	      event.preventDefault();
 	      this.props.actions.addTransaction(function (id) {
-	        router.push({}, '/transactions/{id}');
+	        console.log('new transaction:', id);
+	        _this2.context.router.push({ pathname: '/transactions/' + id });
 	      });
 	    }
 	  }, {
@@ -74801,6 +74803,7 @@
 
 	function addTransaction(cb) {
 	  var id = Date.now().toString();
+	  console.log('new transaction:', id);
 	  if (cb) {
 	    cb(id);
 	  }

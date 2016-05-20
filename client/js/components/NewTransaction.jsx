@@ -6,10 +6,11 @@ import {PageHeader} from 'react-bootstrap'
 
 class NewTransaction extends Component {
 
-  beginTransaction() {
-    const { router } = this.context
+  beginTransaction(event) {
+    event.preventDefault()
     this.props.actions.addTransaction((id) => {
-      router.push({}, `/transactions/{id}`)
+      console.log('new transaction:', id)
+      this.context.router.push({pathname: `/transactions/${id}`})
     })
   }
 
