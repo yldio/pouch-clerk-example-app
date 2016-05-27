@@ -5,6 +5,7 @@ const initialState = []
 export default function transactions(state = initialState, action) {
   switch (action.type) {
     case ADD_TRANSACTION:
+      console.log('adding transaction...')
       return [
         {
           _id: action.id,

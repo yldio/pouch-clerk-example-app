@@ -1,11 +1,41 @@
 import React from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 
-export default React.createClass({
+class Transaction extends React.Component {
   render() {
-    return (
-      <div>
-        <h1>Transaction #{this.props.id}</h1>
-      </div>
-    )
+    let { transaction } = this.props
+    console.log('props:', this.props)
+    if (transaction) {
+      return (
+        <div>
+          <h1>Transaction #{transaction._id}</h1>
+          <p>Completed: {transaction.completed ? 'true' : 'false'}</p>
+        </div>
+      )
+    } else {
+      return (<div><p>Not found</p></div>)
+    }
   }
-})
+}
+
+function mapStateToProps(state, props) {
+  return {
+    transaction: state.transactions.find(withId(props.params.id)),
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {}
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Transaction)
+
+function withId(id) {
+  return function(transaction) {
+    return transaction._id === id
+  }
+}
