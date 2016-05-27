@@ -16,27 +16,27 @@ export default function transactions(state = initialState, action) {
 
     case INSERT_TRANSACTION:
       return [
-        action.todo,
+        action.transaction,
         ...state
       ]
 
     case DELETE_TRANSACTION:
-      return state.filter(todo =>
-        todo._id !== action.id
+      return state.filter(transaction =>
+        transaction._id !== action.id
       )
 
     case EDIT_TRANSACTION:
-      return state.map(todo =>
-        todo._id === action.id ?
-          Object.assign({}, todo, { text: action.text }) :
-          todo
+      return state.map(transaction =>
+        transaction._id === action.id ?
+          Object.assign({}, transaction, { text: action.text }) :
+          transaction
       )
 
     case UPDATE_TRANSACTION:
-      return state.map(todo =>
-        todo._id === action.todo._id ?
-          action.todo :
-          todo
+      return state.map(transaction =>
+        transaction._id === action.transaction._id ?
+          action.transaction :
+          transaction
       )
 
     default:

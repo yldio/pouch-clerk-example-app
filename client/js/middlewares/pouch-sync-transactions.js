@@ -16,6 +16,7 @@ export default function(session) {
   var next
 
   session.on('new', function(user) {
+    console.log('new session')
 
     const dbName = user + '-transactions';
     const db = DB(dbName)

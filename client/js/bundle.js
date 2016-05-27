@@ -21774,21 +21774,21 @@
 	      }].concat(_toConsumableArray(state));
 
 	    case _ActionTypes.INSERT_TRANSACTION:
-	      return [action.todo].concat(_toConsumableArray(state));
+	      return [action.transaction].concat(_toConsumableArray(state));
 
 	    case _ActionTypes.DELETE_TRANSACTION:
-	      return state.filter(function (todo) {
-	        return todo._id !== action.id;
+	      return state.filter(function (transaction) {
+	        return transaction._id !== action.id;
 	      });
 
 	    case _ActionTypes.EDIT_TRANSACTION:
-	      return state.map(function (todo) {
-	        return todo._id === action.id ? Object.assign({}, todo, { text: action.text }) : todo;
+	      return state.map(function (transaction) {
+	        return transaction._id === action.id ? Object.assign({}, transaction, { text: action.text }) : transaction;
 	      });
 
 	    case _ActionTypes.UPDATE_TRANSACTION:
-	      return state.map(function (todo) {
-	        return todo._id === action.todo._id ? action.todo : todo;
+	      return state.map(function (transaction) {
+	        return transaction._id === action.transaction._id ? action.transaction : transaction;
 	      });
 
 	    default:
@@ -21896,6 +21896,7 @@
 	  var next;
 
 	  session.on('new', function (user) {
+	    console.log('new session');
 
 	    var dbName = user + '-transactions';
 	    var db = (0, _db.get)(dbName);
@@ -48700,17 +48701,19 @@
 	});
 
 	exports.default = function (session) {
-	  var user;
+	  var username;
 
 	  return function (options) {
 	    return function (next) {
 	      return function (action) {
 	        var returnValue = next(action);
 	        var newState = options.getState();
-	        if (newState.session.user !== user) {
-	          user = newState.session.user;
-	          if (user) {
-	            session.emit('new', user);
+	        console.log('new state.session.user:', newState.session);
+	        if (newState.session.username !== username) {
+	          username = newState.session.username;
+	          console.log('user:', username);
+	          if (username) {
+	            session.emit('new', username);
 	          } else {
 	            session.emit('delete');
 	          }

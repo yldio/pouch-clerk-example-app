@@ -1,15 +1,17 @@
 export default function(session) {
-  var user
+  var username
 
   return function(options) {
     return function(next) {
       return function(action) {
         const returnValue = next(action)
         const newState = options.getState()
-        if (newState.session.user !== user) {
-          user = newState.session.user
-          if (user) {
-            session.emit('new', user);
+        console.log('new state.session.user:', newState.session)
+        if (newState.session.username !== username) {
+          username = newState.session.username
+          console.log('user:', username)
+          if (username) {
+            session.emit('new', username);
           } else {
             session.emit('delete');
           }
