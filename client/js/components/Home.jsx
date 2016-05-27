@@ -12,7 +12,7 @@ class Home extends React.Component {
   }
 
   render() {
-    const logLink = (this.props.session.state === 'logged out') ?
+    const logLink = (this.props.sessionState === 'logged out') ?
       (<p><Link to="/session/new">Log in</Link></p>) :
       (<Button onClick={::this.onLogout}>Log out</Button>)
 
@@ -28,7 +28,7 @@ class Home extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    session: state.session,
+    sessionState: state.session.state,
   }
 }
 

@@ -74465,7 +74465,7 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var logLink = this.props.session.state === 'logged out' ? _react3.default.createElement(
+	      var logLink = this.props.sessionState === 'logged out' ? _react3.default.createElement(
 	        'p',
 	        null,
 	        _react3.default.createElement(
@@ -74497,7 +74497,7 @@
 
 	function mapStateToProps(state) {
 	  return {
-	    session: state.session
+	    sessionState: state.session.state
 	  };
 	}
 
