@@ -9,7 +9,6 @@ class NewTransaction extends Component {
   beginTransaction(event) {
     event.preventDefault()
     this.props.actions.addTransaction((id) => {
-      console.log('new transaction:', id)
       this.context.router.push({pathname: `/transactions/${id}`})
     })
   }
