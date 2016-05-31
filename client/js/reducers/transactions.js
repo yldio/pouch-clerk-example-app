@@ -8,8 +8,7 @@ export default function transactions(state = initialState, action) {
       console.log('adding transaction...')
       return [
         {
-          _id: action.id,
-          completed: false
+          _id: action.id
         },
         ...state
       ]

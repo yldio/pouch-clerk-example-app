@@ -22242,8 +22242,7 @@
 	    case _ActionTypes.ADD_TRANSACTION:
 	      console.log('adding transaction...');
 	      return [{
-	        _id: action.id,
-	        completed: false
+	        _id: action.id
 	      }].concat(_toConsumableArray(state));
 
 	    case _ActionTypes.INSERT_TRANSACTION:
