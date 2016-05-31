@@ -24,13 +24,15 @@ export function startSession(form, cb) {
     // pretend we're logging in
     setTimeout(() => {
       sessionDB.get('session', function(err, session) {
-        if (err) {
+        if (err && err.status !== 404) {
+          console.log(err)
           dispatch({ type: types.ERROR, error: err })
         } else {
           if (! session) { session = { _id: 'session' } }
           session.username = form.username
           sessionDB.put(session, function(err) {
             if (err) {
+              console.log(err)
               dispatch({ type: types.ERROR, error: err })
             } else {
               dispatch({ type: types.SET_SESSION_USER, username: form.username })

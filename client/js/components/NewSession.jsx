@@ -21,6 +21,7 @@ class NewSession extends Component {
     const { actions } = this.props
     const { router } = this.context
     event.preventDefault()
+    console.log('submit, state = ', this.state)
     this.props.actions.startSession(this.state, () => {
       router.push({pathname: '/transactions/new'})
     })
@@ -34,7 +35,7 @@ class NewSession extends Component {
           onSubmit={::this.handleSubmit}
           onChange={::this.handleInputChange}
           >
-          <input type="email" name="username"></input>
+          <input type="text" name="username"></input>
           <button type="submit"
             className="pure-button pure-button-primary"
             >Login</button>

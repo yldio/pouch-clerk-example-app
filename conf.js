@@ -1,0 +1,1 @@
+exports.couchdb = process.env.COUCHDB || 'http://admin:admin@localhost:5984'

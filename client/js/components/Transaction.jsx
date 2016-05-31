@@ -3,6 +3,16 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
 class Transaction extends React.Component {
+
+  renderState() {
+    let { transaction } = this.props
+    if (transaction.clerk_state) {
+      return (<span>{transaction.clerk_state.state}</span>)
+    } else {
+      return (<span>Unknown</span>)
+    }
+  }
+
   render() {
     let { transaction } = this.props
     console.log('props:', this.props)
@@ -10,6 +20,7 @@ class Transaction extends React.Component {
       return (
         <div>
           <h1>Transaction #{transaction._id}</h1>
+          <p>State: {this.renderState()}</p>
           <p>Completed: {transaction.completed ? 'true' : 'false'}</p>
         </div>
       )

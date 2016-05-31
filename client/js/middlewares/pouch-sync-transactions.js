@@ -36,7 +36,7 @@ export default function(session) {
     sync = syncClient.
       connect('ws://localhost:3001').
       on('error', function(err) {
-        console.log(err);
+        console.log('error on websocker connection:', err);
       }).
       sync(db, {
         remoteName: dbName,
@@ -44,12 +44,16 @@ export default function(session) {
 
     syncEvents.forEach(function(event) {
       sync.on(event, function() {
+        console.log('sync event:', event)
         options.dispatch({type: types.SET_SYNC_STATE, text: event})
       })
     })
 
+    sync.on('error', err => console.log(err.stack))
+
     clientEvents.forEach(function(event) {
       syncClient.on(event, function() {
+        console.log('sync client event:', event)
         options.dispatch({type: types.SET_SYNC_STATE, text: event})
       })
     })
