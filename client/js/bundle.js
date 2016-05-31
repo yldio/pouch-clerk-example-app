@@ -22411,7 +22411,6 @@
 
 	    clientEvents.forEach(function (event) {
 	      syncClient.on(event, function () {
-	        console.log('sync client event:', event);
 	        options.dispatch({ type: types.SET_SYNC_STATE, text: event });
 	      });
 	    });
