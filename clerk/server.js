@@ -18,7 +18,10 @@ function onRequest(credentials, dbName, cb) {
   // console.log('url:', url)
   const dbPath = path.join(basePath, dbName)
   const db = new PouchDB(dbPath)
-  clerk.add(db, dbName)
+
+  if (! clerk.has(dbName)) {
+    clerk.add(db, dbName)
+  }
   cb(null, db)
 }
 

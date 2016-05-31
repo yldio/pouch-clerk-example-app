@@ -20,8 +20,7 @@ class Transaction extends React.Component {
       return (
         <div>
           <h1>Transaction #{transaction._id}</h1>
-          <p>State: {this.renderState()}</p>
-          <p>Completed: {transaction.completed ? 'true' : 'false'}</p>
+          <pre><code>{JSON.stringify(transaction, null, '\t')}</code></pre>
         </div>
       )
     } else {

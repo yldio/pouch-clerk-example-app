@@ -1,6 +1,13 @@
 exports = module.exports = {};
 
-['start', 'searching-driver'].forEach(module => {
+const states = [
+  'start',
+  'searching-driver',
+  'driver-assigned',
+  'driver-en-route'
+  ]
+
+states.forEach(module => {
   const action = require('./' + module)
   exports[module] = action;
 })

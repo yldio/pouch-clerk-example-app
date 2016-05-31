@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "express": "^4.13.4",
-    "pouch-clerk": "0.0.1",
+    "pouch-clerk": "^0.2.0",
     "pouch-websocket-sync": "^0.2.0",
     "pouchdb": "^5.3.2"
   }

@@ -80075,16 +80075,13 @@
 	            transaction._id
 	          ),
 	          _react3.default.createElement(
-	            'p',
+	            'pre',
 	            null,
-	            'State: ',
-	            this.renderState()
-	          ),
-	          _react3.default.createElement(
-	            'p',
-	            null,
-	            'Completed: ',
-	            transaction.completed ? 'true' : 'false'
+	            _react3.default.createElement(
+	              'code',
+	              null,
+	              JSON.stringify(transaction, null, '\t')
+	            )
 	          )
 	        );
 	      } else {
