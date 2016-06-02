@@ -5,6 +5,7 @@ import {Link} from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem, Button} from 'react-bootstrap'
 import * as SessionActions from '../actions/session'
+import SyncStatus from './SyncStatus'
 
 class NavBar extends React.Component {
 
@@ -21,9 +22,11 @@ class NavBar extends React.Component {
 
     const greeting = session.state == 'logged out' ?
       (
-        <LinkContainer to={{ pathname: '/session/new' }}>
-          <Button bsSize="xs">Log in</Button>
-        </LinkContainer>
+        <NavItem>
+          <LinkContainer to={{ pathname: '/session/new' }}>
+            <Button bsSize="xs">Log in</Button>
+          </LinkContainer>
+        </NavItem>
       )
         :
       (
@@ -49,12 +52,11 @@ class NavBar extends React.Component {
           </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>
-        <Navbar.Collapse>
-          {privateLinks}
-          <Nav pullRight>
-            {greeting}
-          </Nav>
-        </Navbar.Collapse>
+        {privateLinks}
+        <Nav pullRight>
+          {greeting}
+          <NavItem><SyncStatus></SyncStatus></NavItem>
+        </Nav>
       </Navbar>
     )
   }
