@@ -19,7 +19,7 @@ export function loadSession() {
 
 export function startSession(form, cb) {
   return (dispatch) => {
-    dispatch({ type: types.START_SESSION, form });
+    dispatch({ type: types.START_SESSION, form })
 
     // pretend we're logging in
     setTimeout(() => {
@@ -47,5 +47,18 @@ export function startSession(form, cb) {
 }
 
 export function endSession() {
-  return { type: types.END_SESSION }
+  return (dispatch) => {
+    console.log('will remove session')
+    sessionDB.get('session', (error, session) => {
+      if (error) {
+        dispatch({ type: types.ERROR, error })
+      } else {
+        sessionDB.remove(session, (err) => {
+          console.log('removed session', err)
+          dispatch({ type: types.END_SESSION })
+        })
+      }
+    })
+  }
+
 }

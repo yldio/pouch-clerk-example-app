@@ -2,8 +2,9 @@ import React, { PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import {Link} from 'react-router'
+import { LinkContainer } from 'react-router-bootstrap'
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem, Button} from 'react-bootstrap'
-import * as UserActions from '../actions/user'
+import * as SessionActions from '../actions/session'
 
 class NavBar extends React.Component {
 
@@ -19,17 +20,24 @@ class NavBar extends React.Component {
     const { session } = this.props
 
     const greeting = session.state == 'logged out' ?
-      (<NavItem eventKey={1} href="/session/new">Log in</NavItem>) :
+      (
+        <LinkContainer to={{ pathname: '/session/new' }}>
+          <Button bsSize="xs">Log in</Button>
+        </LinkContainer>
+      )
+        :
       (
         <NavItem eventKey={1}>
           Hello {session.username}&nbsp;
-          <Button style={{'margin-left': '1em'}} bsSize="xsmall" onClick={::this.onLogOut}>Log out</Button>
-          </NavItem>
-          )
+          <Button style={{ marginLeft: '1em' }} bsSize="xsmall" onClick={::this.onLogOut}>Log out</Button>
+        </NavItem>
+      )
 
     const privateLinks = session.state == 'logged in' && (
         <Nav>
-          <NavItem eventKey={1} href="/transactions/new">New Transaction</NavItem>
+          <LinkContainer to={{ pathname: '/transactions/new' }}>
+            <NavItem eventKey={1} href="/transactions/new">New Transaction</NavItem>
+          </LinkContainer>
         </Nav>
       )
 
@@ -65,7 +73,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(UserActions, dispatch)
+    actions: bindActionCreators(SessionActions, dispatch)
   }
 }
 

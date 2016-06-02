@@ -53278,10 +53278,8 @@
 	      return function (action) {
 	        var returnValue = next(action);
 	        var newState = options.getState();
-	        console.log('new state.session.user:', newState.session);
 	        if (newState.session.username !== username) {
 	          username = newState.session.username;
-	          console.log('user:', username);
 	          if (username) {
 	            session.emit('new', username);
 	          } else {
@@ -58840,9 +58838,9 @@
 
 	var _NavBar2 = _interopRequireDefault(_NavBar);
 
-	var _user = __webpack_require__(685);
+	var _session = __webpack_require__(694);
 
-	var UserActions = _interopRequireWildcard(_user);
+	var SessionActions = _interopRequireWildcard(_session);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -58910,7 +58908,7 @@
 
 	function mapDispatchToProps(dispatch) {
 	  return {
-	    actions: (0, _redux.bindActionCreators)(UserActions, dispatch)
+	    actions: (0, _redux.bindActionCreators)(SessionActions, dispatch)
 	  };
 	}
 
@@ -60085,11 +60083,13 @@
 
 	var _reactRouter = __webpack_require__(350);
 
+	var _reactRouterBootstrap = __webpack_require__(691);
+
 	var _reactBootstrap = __webpack_require__(420);
 
-	var _user = __webpack_require__(685);
+	var _session = __webpack_require__(694);
 
-	var UserActions = _interopRequireWildcard(_user);
+	var SessionActions = _interopRequireWildcard(_session);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -60145,9 +60145,13 @@
 
 
 	      var greeting = session.state == 'logged out' ? _react3.default.createElement(
-	        _reactBootstrap.NavItem,
-	        { eventKey: 1, href: '/session/new' },
-	        'Log in'
+	        _reactRouterBootstrap.LinkContainer,
+	        { to: { pathname: '/session/new' } },
+	        _react3.default.createElement(
+	          _reactBootstrap.Button,
+	          { bsSize: 'xs' },
+	          'Log in'
+	        )
 	      ) : _react3.default.createElement(
 	        _reactBootstrap.NavItem,
 	        { eventKey: 1 },
@@ -60156,7 +60160,7 @@
 	        ' ',
 	        _react3.default.createElement(
 	          _reactBootstrap.Button,
-	          { style: { 'margin-left': '1em' }, bsSize: 'xsmall', onClick: this.onLogOut.bind(this) },
+	          { style: { marginLeft: '1em' }, bsSize: 'xsmall', onClick: this.onLogOut.bind(this) },
 	          'Log out'
 	        )
 	      );
@@ -60165,9 +60169,13 @@
 	        _reactBootstrap.Nav,
 	        null,
 	        _react3.default.createElement(
-	          _reactBootstrap.NavItem,
-	          { eventKey: 1, href: '/transactions/new' },
-	          'New Transaction'
+	          _reactRouterBootstrap.LinkContainer,
+	          { to: { pathname: '/transactions/new' } },
+	          _react3.default.createElement(
+	            _reactBootstrap.NavItem,
+	            { eventKey: 1, href: '/transactions/new' },
+	            'New Transaction'
+	          )
 	        )
 	      );
 
@@ -60217,7 +60225,7 @@
 
 	function mapDispatchToProps(dispatch) {
 	  return {
-	    actions: (0, _redux.bindActionCreators)(UserActions, dispatch)
+	    actions: (0, _redux.bindActionCreators)(SessionActions, dispatch)
 	  };
 	}
 
@@ -79465,79 +79473,7 @@
 	exports.ValidComponentChildren = _ValidComponentChildren3['default'];
 
 /***/ },
-/* 685 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.loadSession = loadSession;
-	exports.startSession = startSession;
-	exports.endSession = endSession;
-
-	var _ActionTypes = __webpack_require__(195);
-
-	var types = _interopRequireWildcard(_ActionTypes);
-
-	var _db = __webpack_require__(333);
-
-	var DB = _interopRequireWildcard(_db);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	var sessionDB = DB.get('session');
-
-	function loadSession() {
-	  return function (dispatch) {
-	    sessionDB.get('session', function (err, session) {
-	      if (err) {
-	        dispatch({ type: types.ERROR, error: err });
-	      } else if (session) {
-	        dispatch({ type: types.SET_SESSION_USER, username: session.username });
-	      } else {
-	        dispatch({ type: types.END_SESSION });
-	      }
-	    });
-	  };
-	}
-
-	function startSession(form, cb) {
-	  return function (dispatch) {
-	    dispatch({ type: types.START_SESSION, form: form });
-
-	    // pretend we're logging in
-	    setTimeout(function () {
-	      sessionDB.get('session', function (err, session) {
-	        if (err && err.status !== 404) {
-	          console.log(err);
-	          dispatch({ type: types.ERROR, error: err });
-	        } else {
-	          if (!session) {
-	            session = { _id: 'session' };
-	          }
-	          session.username = form.username;
-	          sessionDB.put(session, function (err) {
-	            if (err) {
-	              console.log(err);
-	              dispatch({ type: types.ERROR, error: err });
-	            } else {
-	              dispatch({ type: types.SET_SESSION_USER, username: form.username });
-	              if (cb) cb();
-	            }
-	          });
-	        }
-	      });
-	    }, 1000);
-	  };
-	}
-
-	function endSession() {
-	  return { type: types.END_SESSION };
-	}
-
-/***/ },
+/* 685 */,
 /* 686 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -79569,9 +79505,9 @@
 
 	var _redux = __webpack_require__(175);
 
-	var _user = __webpack_require__(685);
+	var _session = __webpack_require__(694);
 
-	var UserActions = _interopRequireWildcard(_user);
+	var SessionActions = _interopRequireWildcard(_session);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -79657,7 +79593,7 @@
 
 	function mapDispatchToProps(dispatch) {
 	  return {
-	    actions: (0, _redux.bindActionCreators)(UserActions, dispatch)
+	    actions: (0, _redux.bindActionCreators)(SessionActions, dispatch)
 	  };
 	}
 
@@ -79691,9 +79627,9 @@
 
 	var _reactRedux = __webpack_require__(168);
 
-	var _user = __webpack_require__(685);
+	var _session = __webpack_require__(694);
 
-	var UserActions = _interopRequireWildcard(_user);
+	var SessionActions = _interopRequireWildcard(_session);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -79804,7 +79740,7 @@
 
 	function mapDispatchToProps(dispatch) {
 	  return {
-	    actions: (0, _redux.bindActionCreators)(UserActions, dispatch)
+	    actions: (0, _redux.bindActionCreators)(SessionActions, dispatch)
 	  };
 	}
 
@@ -80117,6 +80053,259 @@
 	function withId(id) {
 	  return function (transaction) {
 	    return transaction._id === id;
+	  };
+	}
+
+/***/ },
+/* 691 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+	exports.LinkContainer = exports.IndexLinkContainer = undefined;
+
+	var _IndexLinkContainer2 = __webpack_require__(692);
+
+	var _IndexLinkContainer3 = _interopRequireDefault(_IndexLinkContainer2);
+
+	var _LinkContainer2 = __webpack_require__(693);
+
+	var _LinkContainer3 = _interopRequireDefault(_LinkContainer2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.IndexLinkContainer = _IndexLinkContainer3.default;
+	exports.LinkContainer = _LinkContainer3.default;
+
+/***/ },
+/* 692 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _LinkContainer = __webpack_require__(693);
+
+	var _LinkContainer2 = _interopRequireDefault(_LinkContainer);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	// Don't use a stateless function, to allow users to set a ref.
+	/* eslint-disable react/prefer-stateless-function */
+
+	var IndexLinkContainer = function (_React$Component) {
+	  _inherits(IndexLinkContainer, _React$Component);
+
+	  function IndexLinkContainer() {
+	    _classCallCheck(this, IndexLinkContainer);
+
+	    return _possibleConstructorReturn(this, _React$Component.apply(this, arguments));
+	  }
+
+	  IndexLinkContainer.prototype.render = function render() {
+	    return _react2.default.createElement(_LinkContainer2.default, _extends({}, this.props, { onlyActiveOnIndex: true }));
+	  };
+
+	  return IndexLinkContainer;
+	}(_react2.default.Component);
+	/* eslint-enable react/prefer-stateless-function */
+
+
+	exports.default = IndexLinkContainer;
+	module.exports = exports['default'];
+
+/***/ },
+/* 693 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Link = __webpack_require__(388);
+
+	var _Link2 = _interopRequireDefault(_Link);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // This is largely taken from react-router/lib/Link.
+
+	var propTypes = {
+	  onlyActiveOnIndex: _react2.default.PropTypes.bool.isRequired,
+	  to: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.string, _react2.default.PropTypes.object]).isRequired,
+	  onClick: _react2.default.PropTypes.func,
+	  active: _react2.default.PropTypes.bool,
+	  children: _react2.default.PropTypes.node.isRequired
+	};
+
+	var contextTypes = {
+	  router: _react2.default.PropTypes.object
+	};
+
+	var defaultProps = {
+	  onlyActiveOnIndex: false
+	};
+
+	var LinkContainer = function (_React$Component) {
+	  _inherits(LinkContainer, _React$Component);
+
+	  function LinkContainer() {
+	    var _temp, _this, _ret;
+
+	    _classCallCheck(this, LinkContainer);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, _React$Component.call.apply(_React$Component, [this].concat(args))), _this), _this.onClick = function (event) {
+	      if (_this.props.children.props.onClick) {
+	        _this.props.children.props.onClick(event);
+	      }
+
+	      _Link2.default.prototype.handleClick.call(_this, event);
+	    }, _temp), _possibleConstructorReturn(_this, _ret);
+	  }
+
+	  LinkContainer.prototype.render = function render() {
+	    var router = this.context.router;
+	    var _props = this.props;
+	    var onlyActiveOnIndex = _props.onlyActiveOnIndex;
+	    var to = _props.to;
+	    var children = _props.children;
+
+	    var props = _objectWithoutProperties(_props, ['onlyActiveOnIndex', 'to', 'children']);
+
+	    props.onClick = this.onClick;
+
+	    // Ignore if rendered outside Router context; simplifies unit testing.
+	    if (router) {
+	      props.href = router.createHref(to);
+
+	      if (props.active == null) {
+	        props.active = router.isActive(to, onlyActiveOnIndex);
+	      }
+	    }
+
+	    return _react2.default.cloneElement(_react2.default.Children.only(children), props);
+	  };
+
+	  return LinkContainer;
+	}(_react2.default.Component);
+
+	LinkContainer.propTypes = propTypes;
+	LinkContainer.contextTypes = contextTypes;
+	LinkContainer.defaultProps = defaultProps;
+
+	exports.default = LinkContainer;
+	module.exports = exports['default'];
+
+/***/ },
+/* 694 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.loadSession = loadSession;
+	exports.startSession = startSession;
+	exports.endSession = endSession;
+
+	var _ActionTypes = __webpack_require__(195);
+
+	var types = _interopRequireWildcard(_ActionTypes);
+
+	var _db = __webpack_require__(333);
+
+	var DB = _interopRequireWildcard(_db);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	var sessionDB = DB.get('session');
+
+	function loadSession() {
+	  return function (dispatch) {
+	    sessionDB.get('session', function (err, session) {
+	      if (err) {
+	        dispatch({ type: types.ERROR, error: err });
+	      } else if (session) {
+	        dispatch({ type: types.SET_SESSION_USER, username: session.username });
+	      } else {
+	        dispatch({ type: types.END_SESSION });
+	      }
+	    });
+	  };
+	}
+
+	function startSession(form, cb) {
+	  return function (dispatch) {
+	    dispatch({ type: types.START_SESSION, form: form });
+
+	    // pretend we're logging in
+	    setTimeout(function () {
+	      sessionDB.get('session', function (err, session) {
+	        if (err && err.status !== 404) {
+	          console.log(err);
+	          dispatch({ type: types.ERROR, error: err });
+	        } else {
+	          if (!session) {
+	            session = { _id: 'session' };
+	          }
+	          session.username = form.username;
+	          sessionDB.put(session, function (err) {
+	            if (err) {
+	              console.log(err);
+	              dispatch({ type: types.ERROR, error: err });
+	            } else {
+	              dispatch({ type: types.SET_SESSION_USER, username: form.username });
+	              if (cb) cb();
+	            }
+	          });
+	        }
+	      });
+	    }, 1000);
+	  };
+	}
+
+	function endSession() {
+	  return function (dispatch) {
+	    console.log('will remove session');
+	    sessionDB.get('session', function (error, session) {
+	      if (error) {
+	        dispatch({ type: types.ERROR, error: error });
+	      } else {
+	        sessionDB.remove(session, function (err) {
+	          console.log('removed session', err);
+	          dispatch({ type: types.END_SESSION });
+	        });
+	      }
+	    });
 	  };
 	}
 

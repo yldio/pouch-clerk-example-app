@@ -1,7 +1,7 @@
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import React, { Component, PropTypes } from 'react'
-import * as UserActions from '../actions/user'
+import * as SessionActions from '../actions/session'
 
 class NewSession extends Component {
 
@@ -58,7 +58,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(UserActions, dispatch)
+    actions: bindActionCreators(SessionActions, dispatch)
   }
 }
 

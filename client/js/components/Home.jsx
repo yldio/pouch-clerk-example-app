@@ -3,7 +3,7 @@ import {Link} from 'react-router'
 import {Button} from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import * as UserActions from '../actions/user'
+import * as SessionActions from '../actions/session'
 
 class Home extends React.Component {
 
@@ -34,7 +34,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(UserActions, dispatch)
+    actions: bindActionCreators(SessionActions, dispatch)
   }
 }
 

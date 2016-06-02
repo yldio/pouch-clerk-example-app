@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import {IndexLink} from 'react-router'
 import { connect } from 'react-redux'
 import NavBar from './NavBar.jsx'
-import * as UserActions from '../actions/user'
+import * as SessionActions from '../actions/session'
 
 class App extends Component {
 
@@ -30,7 +30,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(UserActions, dispatch)
+    actions: bindActionCreators(SessionActions, dispatch)
   }
 }
 
