@@ -29,19 +29,10 @@ class Transaction extends React.Component {
   }
 }
 
-function mapStateToProps(state, props) {
-  return {
-    transaction: state.transactions.find(withId(props.params.id)),
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {}
-}
-
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+  (state, props) => {
+    return { transaction: state.transactions.find(withId(props.params.id)) }
+  }
 )(Transaction)
 
 function withId(id) {

@@ -79820,17 +79820,9 @@
 	  return SyncStatus;
 	}(_react3.default.Component));
 
-	function mapStateToProps(state) {
-	  return {
-	    state: state.syncState.text
-	  };
-	}
-
-	function mapDispatchToProps(dispatch) {
-	  return {};
-	}
-
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(SyncStatus);
+	exports.default = (0, _reactRedux.connect)(function (state) {
+	  return { state: state.syncState.text };
+	})(SyncStatus);
 
 /***/ },
 /* 690 */
@@ -80396,17 +80388,9 @@
 	  return Transaction;
 	}(_react3.default.Component));
 
-	function mapStateToProps(state, props) {
-	  return {
-	    transaction: state.transactions.find(withId(props.params.id))
-	  };
-	}
-
-	function mapDispatchToProps(dispatch) {
-	  return {};
-	}
-
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Transaction);
+	exports.default = (0, _reactRedux.connect)(function (state, props) {
+	  return { transaction: state.transactions.find(withId(props.params.id)) };
+	})(Transaction);
 
 
 	function withId(id) {

@@ -20,17 +20,6 @@ class SyncStatus extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    state: state.syncState.text,
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {}
-}
-
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+  state => { return { state: state.syncState.text } }
 )(SyncStatus)
