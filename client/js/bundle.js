@@ -60130,6 +60130,15 @@
 	  }
 
 	  _createClass(NavBar, [{
+	    key: 'onLogOut',
+	    value: function onLogOut(event) {
+	      var router = this.context.router;
+
+	      event.preventDefault();
+	      this.props.actions.endSession();
+	      router.push({ pathname: '/' });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var session = this.props.session;
@@ -60143,7 +60152,23 @@
 	        _reactBootstrap.NavItem,
 	        { eventKey: 1 },
 	        'Hello ',
-	        session.username
+	        session.username,
+	        ' ',
+	        _react3.default.createElement(
+	          _reactBootstrap.Button,
+	          { style: { 'margin-left': '1em' }, bsSize: 'xsmall', onClick: this.onLogOut.bind(this) },
+	          'Log out'
+	        )
+	      );
+
+	      var privateLinks = session.state == 'logged in' && _react3.default.createElement(
+	        _reactBootstrap.Nav,
+	        null,
+	        _react3.default.createElement(
+	          _reactBootstrap.NavItem,
+	          { eventKey: 1, href: '/transactions/new' },
+	          'New Transaction'
+	        )
 	      );
 
 	      return _react3.default.createElement(
@@ -60156,9 +60181,9 @@
 	            _reactBootstrap.Navbar.Brand,
 	            null,
 	            _react3.default.createElement(
-	              'a',
-	              { href: '#' },
-	              'Pouch Clerk Example App'
+	              _reactRouter.Link,
+	              { to: '/' },
+	              'Uber for Taxis'
 	            )
 	          ),
 	          _react3.default.createElement(_reactBootstrap.Navbar.Toggle, null)
@@ -60166,35 +60191,7 @@
 	        _react3.default.createElement(
 	          _reactBootstrap.Navbar.Collapse,
 	          null,
-	          _react3.default.createElement(
-	            _reactBootstrap.Nav,
-	            null,
-	            _react3.default.createElement(
-	              _reactBootstrap.NavItem,
-	              { eventKey: 1, href: '/transactions/new' },
-	              'New Transaction'
-	            ),
-	            _react3.default.createElement(
-	              _reactBootstrap.NavItem,
-	              { eventKey: 2, href: '#' },
-	              'Link'
-	            ),
-	            _react3.default.createElement(
-	              _reactBootstrap.NavDropdown,
-	              { eventKey: 3, title: 'Dropdown', id: 'basic-nav-dropdown' },
-	              _react3.default.createElement(
-	                _reactBootstrap.MenuItem,
-	                { eventKey: 1, href: '/transactions/new' },
-	                'New Transaction'
-	              ),
-	              _react3.default.createElement(_reactBootstrap.MenuItem, { divider: true }),
-	              _react3.default.createElement(
-	                _reactBootstrap.MenuItem,
-	                { eventKey: 1, href: '/session/new' },
-	                'Log in'
-	              )
-	            )
-	          ),
+	          privateLinks,
 	          _react3.default.createElement(
 	            _reactBootstrap.Nav,
 	            { pullRight: true },
@@ -60207,6 +60204,10 @@
 
 	  return NavBar;
 	}(_react3.default.Component));
+
+	NavBar.contextTypes = {
+	  router: _react2.PropTypes.object
+	};
 
 	function mapStateToProps(state) {
 	  return {
