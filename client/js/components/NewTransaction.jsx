@@ -2,7 +2,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import React, { Component, PropTypes } from 'react'
 import * as TransactionActions from '../actions/transactions'
-import {PageHeader} from 'react-bootstrap'
+import { PageHeader, Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
 
 class NewTransaction extends Component {
 
@@ -17,7 +17,14 @@ class NewTransaction extends Component {
     return (
       <div>
         <PageHeader>New Transaction</PageHeader>
-        <button onClick={::this.beginTransaction}>Begin Transaction</button>
+        <form onSubmit={::this.beginTransaction}>
+          <FormGroup>
+            <ControlLabel>Where do you want to be picked up?</ControlLabel>
+            <FormControl.Feedback />
+          </FormGroup>
+
+          <Button onClick={::this.beginTransaction}>Begin Transaction</Button>
+        </form>
       </div>
     )
   }

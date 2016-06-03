@@ -16,7 +16,7 @@ class App extends Component {
     return (
       <div>
         <NavBar />
-        <div className="container">
+        <div className="container" style={{marginTop: '40px'}}>
           {this.props.children}
         </div>
       </div>

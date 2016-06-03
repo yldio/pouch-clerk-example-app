@@ -18,8 +18,11 @@ class Home extends React.Component {
 
     return (
       <div>
-        <h1>Home</h1>
-        {logLink}
+        <center style={{marginTop: '60px'}}>
+          <img src="/images/logo.svg" height="300px"></img>
+          <h1>Dragon Drop</h1>
+          {logLink}
+        </center>
       </div>
     )
   }

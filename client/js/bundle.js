@@ -76,7 +76,7 @@
 
 	var _NewTransaction2 = _interopRequireDefault(_NewTransaction);
 
-	var _Transaction = __webpack_require__(694);
+	var _Transaction = __webpack_require__(693);
 
 	var _Transaction2 = _interopRequireDefault(_Transaction);
 
@@ -58893,7 +58893,7 @@
 	        _react3.default.createElement(_NavBar2.default, null),
 	        _react3.default.createElement(
 	          'div',
-	          { className: 'container' },
+	          { className: 'container', style: { marginTop: '40px' } },
 	          this.props.children
 	        )
 	      );
@@ -60190,7 +60190,7 @@
 
 	      return _react3.default.createElement(
 	        _reactBootstrap.Navbar,
-	        { inverse: true },
+	        { inverse: true, fixedTop: true, fluid: true },
 	        _react3.default.createElement(
 	          _reactBootstrap.Navbar.Header,
 	          null,
@@ -60198,12 +60198,20 @@
 	            _reactBootstrap.Navbar.Brand,
 	            null,
 	            _react3.default.createElement(
+	              _reactBootstrap.Navbar.Text,
+	              { style: { margin: 0, marginTop: '-7px' } },
+	              _react3.default.createElement(
+	                _reactRouter.Link,
+	                { to: '/' },
+	                _react3.default.createElement('img', { src: '/images/logo.svg', style: { height: '40px' } })
+	              )
+	            ),
+	            _react3.default.createElement(
 	              _reactRouter.Link,
 	              { to: '/' },
-	              'Uber for Taxis'
+	              'Dragon Drop'
 	            )
-	          ),
-	          _react3.default.createElement(_reactBootstrap.Navbar.Toggle, null)
+	          )
 	        ),
 	        privateLinks,
 	        _react3.default.createElement(
@@ -79802,18 +79810,29 @@
 	  _createClass(SyncStatus, [{
 	    key: 'render',
 	    value: function render() {
+	      var symbol;
 	      console.log(this.props.state);
 	      switch (this.props.state) {
 	        case 'paused':
-	          return _react3.default.createElement('i', { className: 'fa fa-pause' });
+	          symbol = _react3.default.createElement('i', { className: 'fa fa-pause' });
+	          break;
 	        case 'change':
-	          return _react3.default.createElement('i', { className: 'fa fa-bolt' });
+	          symbol = _react3.default.createElement('i', { className: 'fa fa-bolt' });
+	          break;
 	        case 'disconnect':
 	        case 'reconnect':
-	          return _react3.default.createElement('i', { className: 'fa fa-times', style: { color: 'red' } });
+	          symbol = _react3.default.createElement('i', { className: 'fa fa-times', style: { color: 'red' } });
+	          break;
 	        default:
-	          return _react3.default.createElement('i', { className: 'fa fa-question' });
+	          symbol = _react3.default.createElement('i', { className: 'fa fa-question' });
+	          break;
 	      }
+
+	      return _react3.default.createElement(
+	        'div',
+	        { style: { width: '2em' } },
+	        symbol
+	      );
 	    }
 	  }]);
 
@@ -79924,11 +79943,16 @@
 	        'div',
 	        null,
 	        _react3.default.createElement(
-	          'h1',
-	          null,
-	          'Home'
-	        ),
-	        logLink
+	          'center',
+	          { style: { marginTop: '60px' } },
+	          _react3.default.createElement('img', { src: '/images/logo.svg', height: '300px' }),
+	          _react3.default.createElement(
+	            'h1',
+	            null,
+	            'Dragon Drop'
+	          ),
+	          logLink
+	        )
 	      );
 	    }
 	  }]);
@@ -80125,7 +80149,7 @@
 
 	var _reactRedux = __webpack_require__(168);
 
-	var _transactions = __webpack_require__(693);
+	var _transactions = __webpack_require__(694);
 
 	var TransactionActions = _interopRequireWildcard(_transactions);
 
@@ -80191,9 +80215,23 @@
 	          'New Transaction'
 	        ),
 	        _react3.default.createElement(
-	          'button',
-	          { onClick: this.beginTransaction.bind(this) },
-	          'Begin Transaction'
+	          'form',
+	          { onSubmit: this.beginTransaction.bind(this) },
+	          _react3.default.createElement(
+	            _reactBootstrap.FormGroup,
+	            null,
+	            _react3.default.createElement(
+	              _reactBootstrap.ControlLabel,
+	              null,
+	              'Where do you want to be picked up?'
+	            ),
+	            _react3.default.createElement(_reactBootstrap.FormControl.Feedback, null)
+	          ),
+	          _react3.default.createElement(
+	            _reactBootstrap.Button,
+	            { onClick: this.beginTransaction.bind(this) },
+	            'Begin Transaction'
+	          )
 	        )
 	      );
 	    }
@@ -80225,45 +80263,6 @@
 
 /***/ },
 /* 693 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.addTransaction = addTransaction;
-	exports.deleteTransaction = deleteTransaction;
-	exports.editTransaction = editTransaction;
-
-	var _ActionTypes = __webpack_require__(195);
-
-	var types = _interopRequireWildcard(_ActionTypes);
-
-	var _db = __webpack_require__(333);
-
-	var DB = _interopRequireWildcard(_db);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function addTransaction(cb) {
-	  var id = Date.now().toString();
-	  if (cb) {
-	    cb(id);
-	  }
-	  return { type: types.ADD_TRANSACTION, id: id };
-	}
-
-	function deleteTransaction(id) {
-	  return { type: types.DELETE_TRANSACTION, id: id };
-	}
-
-	function editTransaction(id, text) {
-	  return { type: types.EDIT_TRANSACTION, id: id, text: text };
-	}
-
-/***/ },
-/* 694 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80397,6 +80396,45 @@
 	  return function (transaction) {
 	    return transaction._id === id;
 	  };
+	}
+
+/***/ },
+/* 694 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.addTransaction = addTransaction;
+	exports.deleteTransaction = deleteTransaction;
+	exports.editTransaction = editTransaction;
+
+	var _ActionTypes = __webpack_require__(195);
+
+	var types = _interopRequireWildcard(_ActionTypes);
+
+	var _db = __webpack_require__(333);
+
+	var DB = _interopRequireWildcard(_db);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function addTransaction(cb) {
+	  var id = Date.now().toString();
+	  if (cb) {
+	    cb(id);
+	  }
+	  return { type: types.ADD_TRANSACTION, id: id };
+	}
+
+	function deleteTransaction(id) {
+	  return { type: types.DELETE_TRANSACTION, id: id };
+	}
+
+	function editTransaction(id, text) {
+	  return { type: types.EDIT_TRANSACTION, id: id, text: text };
 	}
 
 /***/ }

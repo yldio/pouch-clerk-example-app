@@ -5,18 +5,25 @@ import { connect } from 'react-redux'
 class SyncStatus extends React.Component {
 
   render() {
+    var symbol;
     console.log(this.props.state)
     switch(this.props.state) {
       case 'paused':
-        return (<i className='fa fa-pause'></i>)
+        symbol = (<i className='fa fa-pause'></i>)
+        break;
       case 'change':
-        return (<i className='fa fa-bolt'></i>)
+        symbol = (<i className='fa fa-bolt'></i>)
+        break;
       case 'disconnect':
       case 'reconnect':
-        return (<i className='fa fa-times' style={{ color: 'red' }}></i>)
+        symbol = (<i className='fa fa-times' style={{ color: 'red' }}></i>)
+        break;
       default:
-        return (<i className='fa fa-question'></i>)
+        symbol = (<i className='fa fa-question'></i>)
+        break
     }
+
+    return (<div style={{width: '2em'}}>{symbol}</div>)
   }
 }
 

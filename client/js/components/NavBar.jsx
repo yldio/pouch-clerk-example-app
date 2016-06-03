@@ -45,12 +45,12 @@ class NavBar extends React.Component {
       )
 
     return (
-      <Navbar inverse>
+      <Navbar inverse fixedTop fluid>
         <Navbar.Header>
           <Navbar.Brand>
-            <Link to='/'>Uber for Taxis</Link>
+            <Navbar.Text style={{margin: 0, marginTop: '-7px'}}><Link to='/'><img src="/images/logo.svg" style={{height: '40px'}}/></Link></Navbar.Text>
+            <Link to='/'>Dragon Drop</Link>
           </Navbar.Brand>
-          <Navbar.Toggle />
         </Navbar.Header>
         {privateLinks}
         <Nav pullRight>
