@@ -21,6 +21,7 @@ class Home extends React.Component {
         <center style={{marginTop: '60px'}}>
           <img src="/images/logo.svg" height="300px"></img>
           <h1>Dragon Drop</h1>
+          <h2>Because Flying Beats Driving Any Time™</h2>
           {logLink}
         </center>
       </div>
