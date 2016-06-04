@@ -48,7 +48,7 @@ class NavBar extends React.Component {
       <Navbar inverse fixedTop fluid>
         <Navbar.Header>
           <Navbar.Brand>
-            <Navbar.Text style={{margin: 0, marginTop: '-7px'}}><Link to='/'><img src="/images/logo.svg" style={{height: '40px'}}/></Link></Navbar.Text>
+            <Navbar.Text style={{margin: 0, marginTop: '-7px'}}><Link to='/'><img src="/images/logo-white.svg" style={{height: '40px'}}/></Link></Navbar.Text>
             <Link to='/'>Dragon Drop</Link>
           </Navbar.Brand>
         </Navbar.Header>
