@@ -80385,8 +80385,8 @@
 	      var map = new mapboxgl.Map({
 	        container: document.getElementById('map'),
 	        style: _conf2.default.mapbox.style,
-	        center: [-74.50, 40],
-	        zoom: 9
+	        center: [-73.9749, 40.7736],
+	        zoom: 14
 	      });
 
 	      map.on('load', function () {
