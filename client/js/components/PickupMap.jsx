@@ -9,18 +9,15 @@ mapboxgl.accessToken = conf.mapbox.token
 export default class PickupMap extends Component {
 
 
-  componentDidMount() {
-
+  startMap(position) {
     const map = new mapboxgl.Map({
       container: document.getElementById('map'),
       style: conf.mapbox.style,
-      center: [-73.9749, 40.7736],
+      center: [position.coords.latitude, position.coords.longitude],
       zoom: 14,
     })
 
     map.on('load', function() {
-      console.log('map loaded')
-
       const geojson = {
           "type": "FeatureCollection",
           "features": [{
@@ -50,12 +47,22 @@ export default class PickupMap extends Component {
       map.on('mousedown', onMouseDown, true)
 
       function onMouseDown(event) {
-        console.log('mouse down at', event.lngLat)
         const coords = event.lngLat
         geojson.features[0].geometry.coordinates = [coords.lng, coords.lat];
         map.getSource('point').setData(geojson);
       }
     })
+  }
+
+  componentDidMount() {
+
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(position => {
+        this.startMap(position)
+      })
+    } else {
+      alert('sorry, your browser does not support geolocation..')
+    }
   }
 
   render() {

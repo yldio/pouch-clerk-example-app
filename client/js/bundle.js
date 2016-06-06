@@ -80379,19 +80379,16 @@
 	  }
 
 	  _createClass(PickupMap, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-
+	    key: 'startMap',
+	    value: function startMap(position) {
 	      var map = new mapboxgl.Map({
 	        container: document.getElementById('map'),
 	        style: _conf2.default.mapbox.style,
-	        center: [-73.9749, 40.7736],
+	        center: [position.coords.latitude, position.coords.longitude],
 	        zoom: 14
 	      });
 
 	      map.on('load', function () {
-	        console.log('map loaded');
-
 	        var geojson = {
 	          "type": "FeatureCollection",
 	          "features": [{
@@ -80421,12 +80418,24 @@
 	        map.on('mousedown', onMouseDown, true);
 
 	        function onMouseDown(event) {
-	          console.log('mouse down at', event.lngLat);
 	          var coords = event.lngLat;
 	          geojson.features[0].geometry.coordinates = [coords.lng, coords.lat];
 	          map.getSource('point').setData(geojson);
 	        }
 	      });
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this2 = this;
+
+	      if ('geolocation' in navigator) {
+	        navigator.geolocation.getCurrentPosition(function (position) {
+	          _this2.startMap(position);
+	        });
+	      } else {
+	        alert('sorry, your browser does not support geolocation..');
+	      }
 	    }
 	  }, {
 	    key: 'render',
