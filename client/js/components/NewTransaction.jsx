@@ -17,14 +17,11 @@ class NewTransaction extends Component {
   render() {
     return (
       <div>
-        <PageHeader>New Transaction</PageHeader>
         <form onSubmit={::this.beginTransaction}>
-          <FormGroup>
-            <PickupMap />
-            <ControlLabel>Where do you want to be picked up?</ControlLabel>
-            <FormControl.Feedback />
-          </FormGroup>
-          <Button onClick={::this.beginTransaction}>Begin Transaction</Button>
+          <PickupMap />
+          <center>
+            <Button bsStyle="primary" onClick={::this.beginTransaction}>Request Dragon</Button>
+          </center>
         </form>
       </div>
     )
