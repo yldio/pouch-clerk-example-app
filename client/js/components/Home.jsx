@@ -12,9 +12,11 @@ class Home extends React.Component {
   }
 
   render() {
+    const startLink = (this.props.sessionState === 'logged out') ? undefined :
+      ((<Button bsStyle="primary" bsSize="large" block href="/transactions/new">Request Dragon</Button>))
+
     const logLink = (this.props.sessionState === 'logged out') ?
-      (<p><Link to="/session/new">Log in</Link></p>) :
-      (<Button onClick={::this.onLogout}>Log out</Button>)
+      (<p><Link to="/session/new">Log in</Link></p>) : undefined
 
     return (
       <div>
@@ -22,6 +24,7 @@ class Home extends React.Component {
           <img src="/images/logo.svg" height="300px"></img>
           <h1>Dragon Drop</h1>
           <h2>Because Flying Beats Driving Any Time™</h2>
+          {startLink}
           {logLink}
         </center>
       </div>

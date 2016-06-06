@@ -79925,6 +79925,12 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var startLink = this.props.sessionState === 'logged out' ? undefined : _react3.default.createElement(
+	        _reactBootstrap.Button,
+	        { bsStyle: 'primary', bsSize: 'large', block: true, href: '/transactions/new' },
+	        'Request Dragon'
+	      );
+
 	      var logLink = this.props.sessionState === 'logged out' ? _react3.default.createElement(
 	        'p',
 	        null,
@@ -79933,11 +79939,7 @@
 	          { to: '/session/new' },
 	          'Log in'
 	        )
-	      ) : _react3.default.createElement(
-	        _reactBootstrap.Button,
-	        { onClick: this.onLogout.bind(this) },
-	        'Log out'
-	      );
+	      ) : undefined;
 
 	      return _react3.default.createElement(
 	        'div',
@@ -79956,6 +79958,7 @@
 	            null,
 	            'Because Flying Beats Driving Any Time™'
 	          ),
+	          startLink,
 	          logLink
 	        )
 	      );
