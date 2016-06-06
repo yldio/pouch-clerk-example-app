@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import React, { Component, PropTypes } from 'react'
 import * as TransactionActions from '../actions/transactions'
 import { PageHeader, Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
+import PickupMap from './PickupMap'
 
 class NewTransaction extends Component {
 
@@ -19,10 +20,10 @@ class NewTransaction extends Component {
         <PageHeader>New Transaction</PageHeader>
         <form onSubmit={::this.beginTransaction}>
           <FormGroup>
+            <PickupMap />
             <ControlLabel>Where do you want to be picked up?</ControlLabel>
             <FormControl.Feedback />
           </FormGroup>
-
           <Button onClick={::this.beginTransaction}>Begin Transaction</Button>
         </form>
       </div>
