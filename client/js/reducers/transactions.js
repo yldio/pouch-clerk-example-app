@@ -1,4 +1,10 @@
-import { ADD_TRANSACTION, INSERT_TRANSACTION, DELETE_TRANSACTION, EDIT_TRANSACTION, UPDATE_TRANSACTION, COMPLETE_TRANSACTION, COMPLETE_ALL, CLEAR_COMPLETED } from '../constants/ActionTypes'
+import {
+  ADD_TRANSACTION,
+  INSERT_TRANSACTION,
+  DELETE_TRANSACTION,
+  EDIT_TRANSACTION,
+  UPDATE_TRANSACTION,
+  SET_TRANSACTION_STATE } from '../constants/ActionTypes'
 
 const initialState = []
 
@@ -24,17 +30,29 @@ export default function transactions(state = initialState, action) {
       )
 
     case EDIT_TRANSACTION:
-      return state.map(transaction =>
+      var ns = state.map(transaction =>
         transaction._id === action.id ?
           Object.assign({}, transaction, action.props) :
           transaction
       )
+
+      console.log('ns:', ns);
+
+      return ns;
 
     case UPDATE_TRANSACTION:
       return state.map(transaction =>
         transaction._id === action.transaction._id ?
           action.transaction :
           transaction
+      )
+
+    case SET_TRANSACTION_STATE:
+      return state.map(transaction =>
+        transaction._id === action.id ?
+          Object.assign({}, transaction, {
+            clerk_state: Object.assign({}, transaction.clerk_state, {state: action.state})
+          }) : transaction
       )
 
     default:

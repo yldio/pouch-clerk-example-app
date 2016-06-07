@@ -22155,6 +22155,7 @@
 	var DELETE_TRANSACTION = exports.DELETE_TRANSACTION = 'DELETE_TRANSACTION';
 	var EDIT_TRANSACTION = exports.EDIT_TRANSACTION = 'EDIT_TRANSACTION';
 	var UPDATE_TRANSACTION = exports.UPDATE_TRANSACTION = 'UPDATE_TRANSACTION';
+	var SET_TRANSACTION_STATE = exports.SET_TRANSACTION_STATE = 'SET_TRANSACTION_STATE';
 
 	// SYNC STATE
 	var SET_SYNC_STATE = exports.SET_SYNC_STATE = 'SET_SYNC_STATE';
@@ -22253,13 +22254,24 @@
 	      });
 
 	    case _ActionTypes.EDIT_TRANSACTION:
-	      return state.map(function (transaction) {
+	      var ns = state.map(function (transaction) {
 	        return transaction._id === action.id ? Object.assign({}, transaction, action.props) : transaction;
 	      });
+
+	      console.log('ns:', ns);
+
+	      return ns;
 
 	    case _ActionTypes.UPDATE_TRANSACTION:
 	      return state.map(function (transaction) {
 	        return transaction._id === action.transaction._id ? action.transaction : transaction;
+	      });
+
+	    case _ActionTypes.SET_TRANSACTION_STATE:
+	      return state.map(function (transaction) {
+	        return transaction._id === action.id ? Object.assign({}, transaction, {
+	          clerk_state: Object.assign({}, transaction.clerk_state, { state: action.state })
+	        }) : transaction;
 	      });
 
 	    default:
@@ -80267,6 +80279,7 @@
 	  value: true
 	});
 	exports.addTransaction = addTransaction;
+	exports.setTransactionState = setTransactionState;
 	exports.deleteTransaction = deleteTransaction;
 	exports.editTransaction = editTransaction;
 
@@ -80290,9 +80303,9 @@
 
 	        var transaction = {
 	          clerk_state: {
-	            state: 'start'
+	            state: 'select-source'
 	          },
-	          pickup: { lat: coords.latitude, lng: coords.longitude }
+	          source: { lat: coords.latitude, lng: coords.longitude }
 	        };
 
 	        var id = Date.now().toString();
@@ -80305,6 +80318,10 @@
 	      dispatch({ type: types.ERROR, message: 'No geolocation' });
 	    }
 	  };
+	}
+
+	function setTransactionState(id, state) {
+	  return { type: types.SET_TRANSACTION_STATE, id: id, state: state };
 	}
 
 	function deleteTransaction(id) {
@@ -80489,6 +80506,8 @@
 
 	var _reactGoogleMaps = __webpack_require__(696);
 
+	var _reactBootstrap = __webpack_require__(423);
+
 	var _transactions = __webpack_require__(693);
 
 	var TransactionActions = _interopRequireWildcard(_transactions);
@@ -80537,10 +80556,59 @@
 
 	  _createClass(Map, [{
 	    key: 'handleMapClick',
-	    value: function handleMapClick(event) {}
+	    value: function handleMapClick(event) {
+	      console.log('map click', event);
+	      var transaction = this.props.transaction;
+
+	      if (transaction.clerk_state.state == 'select-source') {
+	        console.log(event);
+	        this.props.actions.editTransaction(transaction._id, {
+	          source: latLngFromEvent(event)
+	        });
+	      } else if (transaction.clerk_state.state == 'select-destination') {
+	        this.props.actions.editTransaction(transaction._id, {
+	          destination: {
+	            lat: event.latLng.lat(),
+	            lng: event.latLng.lng()
+	          }
+	        });
+	      }
+	    }
 	  }, {
-	    key: 'map',
-	    value: function map(coords) {}
+	    key: 'handleSourceSelected',
+	    value: function handleSourceSelected() {
+	      this.props.actions.setTransactionState(this.props.transaction._id, 'select-destination');
+	    }
+	  }, {
+	    key: 'handleDestinationSelected',
+	    value: function handleDestinationSelected() {
+	      this.props.actions.setTransactionState(this.props.transaction._id, 'waiting-for-driver');
+	    }
+	  }, {
+	    key: 'actionButton',
+	    value: function actionButton() {
+	      var button = undefined;
+	      var transaction = this.props.transaction;
+
+	      switch (transaction.clerk_state.state) {
+	        case 'select-source':
+	          button = transaction.source ? _react3.default.createElement(
+	            _reactBootstrap.Button,
+	            { onClick: this.handleSourceSelected.bind(this) },
+	            'Pick me up from here'
+	          ) : undefined;
+	          break;
+	        case 'select-destination':
+	          button = transaction.destination ? _react3.default.createElement(
+	            _reactBootstrap.Button,
+	            { onClick: this.handleDestinationSelected.bind(this) },
+	            'Drop me there'
+	          ) : undefined;
+	          break;
+	      }
+
+	      return button;
+	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
@@ -80555,10 +80623,14 @@
 
 	      var transaction = this.props.transaction;
 
-	      var person = transaction.pickup ? _react3.default.createElement(_reactGoogleMaps.Marker, {
-	        position: transaction.pickup,
+	      var source = transaction.source ? _react3.default.createElement(_reactGoogleMaps.Marker, {
+	        position: transaction.source,
 	        icon: 'http://localhost:8080/images/person.png' }) : undefined;
 
+	      var destination = transaction.destination ? _react3.default.createElement(_reactGoogleMaps.Marker, {
+	        position: transaction.destination }) : undefined;
+
+	      if (!source) return;
 	      var drivers = this.props.drivers;
 
 	      var driversMarkup = drivers ? drivers.map(function (driver) {
@@ -80567,7 +80639,6 @@
 	          icon: 'http://localhost:8080/images/dragon.png' });
 	      }) : undefined;
 
-	      if (!person) return;
 	      return _react3.default.createElement(
 	        'div',
 	        { id: 'map', style: { height: '300px', width: '100%' } },
@@ -80582,13 +80653,15 @@
 	              ref: function ref(map) {
 	                return console.log(map);
 	              },
-	              defaultZoom: 12,
-	              defaultCenter: transaction.pickup,
+	              defaultZoom: 16,
+	              defaultCenter: transaction.source,
 	              onClick: this.handleMapClick.bind(this) },
-	            person,
+	            source,
+	            destination,
 	            driversMarkup
 	          )
-	        })
+	        }),
+	        this.actionButton()
 	      );
 	    }
 	  }]);
@@ -80607,6 +80680,14 @@
 	}
 
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Map);
+
+
+	function latLngFromEvent(event) {
+	  return {
+	    lat: event.latLng.lat(),
+	    lng: event.latLng.lng()
+	  };
+	}
 
 /***/ },
 /* 696 */

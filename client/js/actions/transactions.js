@@ -10,9 +10,9 @@ export function addTransaction(cb) {
         const { coords } = position
         const transaction = {
           clerk_state: {
-            state: 'start'
+            state: 'select-source'
           },
-          pickup: {lat: coords.latitude, lng: coords.longitude}
+          source: {lat: coords.latitude, lng: coords.longitude}
         }
 
         const id = Date.now().toString()
@@ -23,6 +23,10 @@ export function addTransaction(cb) {
       dispatch({type: types.ERROR, message: 'No geolocation'})
     }
   }
+}
+
+export function setTransactionState(id, state) {
+  return {type: types.SET_TRANSACTION_STATE, id, state}
 }
 
 export function deleteTransaction(id) {
