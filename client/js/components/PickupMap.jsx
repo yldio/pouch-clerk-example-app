@@ -9,38 +9,39 @@ mapboxgl.accessToken = conf.mapbox.token
 export default class PickupMap extends Component {
 
 
-  startMap(position) {
+  startMap(coords) {
     const map = new mapboxgl.Map({
       container: document.getElementById('map'),
       style: conf.mapbox.style,
-      center: [position.coords.latitude, position.coords.longitude],
+      center: [coords.latitude, coords.longitude],
       zoom: 14,
     })
 
     map.on('load', function() {
+      console.log('map loaded')
       const geojson = {
-          "type": "FeatureCollection",
-          "features": [{
-              "type": "Feature",
-              "geometry": {
-                  "type": "Point",
-                  "coordinates": [0, 0]
+          'type': 'FeatureCollection',
+          'features': [{
+              'type': 'Feature',
+              'geometry': {
+                  'type': 'Point',
+                  'coordinates': [coords.latitude, coords.longitude],
               }
           }]
-      };
+      }
 
       map.addSource('point', {
-          "type": "geojson",
-          "data": geojson,
+          'type': 'geojson',
+          'data': geojson,
       })
 
       map.addLayer({
-        "id": "point",
-        "type": "circle",
-        "source": "point",
-        "paint": {
-          "circle-radius": 10,
-          "circle-color": "#3887be",
+        'id': 'point',
+        'type': 'symbol',
+        'source': 'point',
+        'layout': {
+          'icon-keep-upright': true,
+          'icon-image': 'url(http://localhost:8080/images/logo.svg)',
         },
       })
 
@@ -48,8 +49,8 @@ export default class PickupMap extends Component {
 
       function onMouseDown(event) {
         const coords = event.lngLat
-        geojson.features[0].geometry.coordinates = [coords.lng, coords.lat];
-        map.getSource('point').setData(geojson);
+        geojson.features[0].geometry.coordinates = [coords.lng, coords.lat]
+        map.getSource('point').setData(geojson)
       }
     })
   }
@@ -58,7 +59,7 @@ export default class PickupMap extends Component {
 
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(position => {
-        this.startMap(position)
+        this.startMap(position.coords)
       })
     } else {
       alert('sorry, your browser does not support geolocation..')
@@ -67,7 +68,7 @@ export default class PickupMap extends Component {
 
   render() {
     return (
-      <div id="map" style={{height: '300px', width: '100%'}}></div>
+      <div id='map' style={{height: '300px', width: '100%'}}></div>
     )
   }
 }

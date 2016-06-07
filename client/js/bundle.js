@@ -80380,38 +80380,39 @@
 
 	  _createClass(PickupMap, [{
 	    key: 'startMap',
-	    value: function startMap(position) {
+	    value: function startMap(coords) {
 	      var map = new mapboxgl.Map({
 	        container: document.getElementById('map'),
 	        style: _conf2.default.mapbox.style,
-	        center: [position.coords.latitude, position.coords.longitude],
+	        center: [coords.latitude, coords.longitude],
 	        zoom: 14
 	      });
 
 	      map.on('load', function () {
+	        console.log('map loaded');
 	        var geojson = {
-	          "type": "FeatureCollection",
-	          "features": [{
-	            "type": "Feature",
-	            "geometry": {
-	              "type": "Point",
-	              "coordinates": [0, 0]
+	          'type': 'FeatureCollection',
+	          'features': [{
+	            'type': 'Feature',
+	            'geometry': {
+	              'type': 'Point',
+	              'coordinates': [coords.latitude, coords.longitude]
 	            }
 	          }]
 	        };
 
 	        map.addSource('point', {
-	          "type": "geojson",
-	          "data": geojson
+	          'type': 'geojson',
+	          'data': geojson
 	        });
 
 	        map.addLayer({
-	          "id": "point",
-	          "type": "circle",
-	          "source": "point",
-	          "paint": {
-	            "circle-radius": 10,
-	            "circle-color": "#3887be"
+	          'id': 'point',
+	          'type': 'symbol',
+	          'source': 'point',
+	          'layout': {
+	            'icon-keep-upright': true,
+	            'icon-image': 'url(http://localhost:8080/images/logo.svg)'
 	          }
 	        });
 
@@ -80431,7 +80432,7 @@
 
 	      if ('geolocation' in navigator) {
 	        navigator.geolocation.getCurrentPosition(function (position) {
-	          _this2.startMap(position);
+	          _this2.startMap(position.coords);
 	        });
 	      } else {
 	        alert('sorry, your browser does not support geolocation..');
