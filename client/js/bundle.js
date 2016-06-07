@@ -80567,10 +80567,7 @@
 	        });
 	      } else if (transaction.clerk_state.state == 'select-destination') {
 	        this.props.actions.editTransaction(transaction._id, {
-	          destination: {
-	            lat: event.latLng.lat(),
-	            lng: event.latLng.lng()
-	          }
+	          destination: latLngFromEvent(event)
 	        });
 	      }
 	    }
@@ -80612,15 +80609,6 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      // if ('geolocation' in navigator) {
-	      //     navigator.geolocation.getCurrentPosition(position => {
-	      //       return this.map(position.coords)
-	      //     })
-	      //   } else {
-	      //     return (<p>Sorry, but geo localization is not (yet?) accessible to me.. :(</p>)
-	      //   }
-	      // }
-
 	      var transaction = this.props.transaction;
 
 	      var source = transaction.source ? _react3.default.createElement(_reactGoogleMaps.Marker, {
@@ -80650,9 +80638,6 @@
 	          googleMapElement: _react3.default.createElement(
 	            _reactGoogleMaps.GoogleMap,
 	            {
-	              ref: function ref(map) {
-	                return console.log(map);
-	              },
 	              defaultZoom: 16,
 	              defaultCenter: transaction.source,
 	              onClick: this.handleMapClick.bind(this) },

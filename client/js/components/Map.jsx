@@ -18,10 +18,7 @@ class Map extends Component {
       })
     } else if (transaction.clerk_state.state == 'select-destination') {
       this.props.actions.editTransaction(transaction._id, {
-        destination: {
-          lat: event.latLng.lat(),
-          lng: event.latLng.lng(),
-        }
+        destination: latLngFromEvent(event)
       })
 
     }
@@ -55,15 +52,6 @@ class Map extends Component {
   }
 
   render() {
-    // if ('geolocation' in navigator) {
-    //     navigator.geolocation.getCurrentPosition(position => {
-    //       return this.map(position.coords)
-    //     })
-    //   } else {
-    //     return (<p>Sorry, but geo localization is not (yet?) accessible to me.. :(</p>)
-    //   }
-    // }
-
     const { transaction } = this.props
     const source = transaction.source ? (
       <Marker
@@ -98,7 +86,6 @@ class Map extends Component {
           }
           googleMapElement={
             <GoogleMap
-              ref={(map) => console.log(map)}
               defaultZoom={16}
               defaultCenter={transaction.source}
               onClick={::this.handleMapClick}>
