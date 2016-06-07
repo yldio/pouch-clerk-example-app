@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import React, { Component, PropTypes } from 'react'
 import * as TransactionActions from '../actions/transactions'
 import { PageHeader, Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
-import PickupMap from './PickupMap'
 
 class NewTransaction extends Component {
 
@@ -18,7 +17,6 @@ class NewTransaction extends Component {
     return (
       <div>
         <form onSubmit={::this.beginTransaction}>
-          <PickupMap />
           <center>
             <Button bsStyle="primary" onClick={::this.beginTransaction}>Request Dragon</Button>
           </center>

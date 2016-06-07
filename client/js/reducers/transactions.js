@@ -5,11 +5,10 @@ const initialState = []
 export default function transactions(state = initialState, action) {
   switch (action.type) {
     case ADD_TRANSACTION:
-      console.log('adding transaction...')
       return [
-        {
+        Object.assign({
           _id: action.id
-        },
+        }, action.props),
         ...state
       ]
 
@@ -27,7 +26,7 @@ export default function transactions(state = initialState, action) {
     case EDIT_TRANSACTION:
       return state.map(transaction =>
         transaction._id === action.id ?
-          Object.assign({}, transaction, { text: action.text }) :
+          Object.assign({}, transaction, action.props) :
           transaction
       )
 

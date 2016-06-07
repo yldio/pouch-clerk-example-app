@@ -1,6 +1,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import Map from './Map'
 
 class Transaction extends React.Component {
 
@@ -14,12 +15,13 @@ class Transaction extends React.Component {
   }
 
   render() {
-    let { transaction } = this.props
-    console.log('props:', this.props)
+    const { transaction } = this.props
+    console.log('transaction:', transaction)
     if (transaction) {
       return (
         <div>
           <h1>Transaction #{transaction._id}</h1>
+          <Map transaction={transaction}/>
           <pre><code>{JSON.stringify(transaction, null, '\t')}</code></pre>
         </div>
       )
