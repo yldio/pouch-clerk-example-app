@@ -14,7 +14,9 @@ export default function transactions(state = initialState, action) {
       return [
         Object.assign({
           _id: action.id,
-          time: {},
+          time: {
+            started: Date.now(),
+          },
         }, action.props),
         ...state
       ]

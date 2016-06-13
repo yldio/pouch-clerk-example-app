@@ -1,1 +1,4 @@
-module.exports = [require('./set-drivers')];
+module.exports = [
+  require('./set-drivers'),
+  require('./cancel-old'),
+  ];

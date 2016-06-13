@@ -3,19 +3,24 @@
 // driver-en-route
 
 const travelTicks = 10;
-const arrivedMinimumDistance = 50;
+const arrivedMinimumDistance = 0.001;
 
 module.exports = function(doc, next) {
   setTimeout(() => {
     if (! doc.driver || ! doc.driver.position) return next(new Error('no driver position'));
-    const dstc = diffLatLong(doc.source, doc.driver.position)
-    console.log('dstc:', dstc);
 
-    doc.driver.position.lat -= dstc.lat / travelTicks
-    doc.driver.position.lng -= dstc.lng / travelTicks
+    if (! doc.driver.speed) {
+      const dstc = diffLatLong(doc.source, doc.driver.position)
+      doc.driver.speed = {
+        lat: dstc.lat / travelTicks,
+        lng: dstc.lng / travelTicks,
+      };
+    }
+
+    doc.driver.position.lat -= doc.driver.speed.lat
+    doc.driver.position.lng -= doc.driver.speed.lng
 
     var distanceAfter = Math.abs(distance(doc.driver.position, doc.source));
-    console.log('distance: ', distanceAfter);
 
     doc.distance = distanceAfter
 
@@ -38,6 +43,7 @@ function diffLatLong(from, to) {
   }
 }
 
-function distance(pos) {
-  return Math.sqrt(Math.pow(pos.lat, 2) + Math.pow(pos.lng, 2));
+function distance(from, to) {
+  const vec = diffLatLong(from, to)
+  return Math.sqrt(Math.pow(vec.lat, 2) + Math.pow(vec.lng, 2));
 }

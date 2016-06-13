@@ -22243,7 +22243,9 @@
 	    case _ActionTypes.ADD_TRANSACTION:
 	      return [Object.assign({
 	        _id: action.id,
-	        time: {}
+	        time: {
+	          started: Date.now()
+	        }
 	      }, action.props)].concat(_toConsumableArray(state));
 
 	    case _ActionTypes.INSERT_TRANSACTION:
