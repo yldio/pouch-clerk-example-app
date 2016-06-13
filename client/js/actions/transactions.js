@@ -4,9 +4,7 @@ import * as DB from '../db'
 export function addTransaction(cb) {
   return function(dispatch) {
     if ('geolocation' in navigator) {
-      console.log('I haz geolocation')
       navigator.geolocation.getCurrentPosition(position => {
-        console.log('I haz position', position)
         const { coords } = position
         const transaction = {
           clerk_state: {

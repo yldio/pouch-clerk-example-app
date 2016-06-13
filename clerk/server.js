@@ -10,6 +10,9 @@ const server = PouchSync.createServer(httpServer, onRequest)
 httpServer.listen(3001, onListen);
 
 const clerk = require('./clerk');
+
+clerk.on('error', error => console.error(error.stack))
+
 const basePath = path.normalize(path.join(__dirname, '..', 'databases'));
 
 function onRequest(credentials, dbName, cb) {

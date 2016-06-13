@@ -29,7 +29,7 @@ class Map extends Component {
   }
 
   handleDestinationSelected() {
-    this.props.actions.setTransactionState(this.props.transaction._id, 'waiting-for-driver')
+    this.props.actions.setTransactionState(this.props.transaction._id, 'searching-driver')
   }
 
   actionButton() {
@@ -56,23 +56,43 @@ class Map extends Component {
     const source = transaction.source ? (
       <Marker
         position={transaction.source}
-        icon="http://localhost:8080/images/person.png">
+        icon="http://localhost:8080/images/person.png"
+        title="Me"
+        label="Me">
        </Marker>) : undefined
 
     const destination = transaction.destination ? (
       <Marker
-        position={transaction.destination}>
+        position={transaction.destination}
+        title='Destination'
+        label='Destination'>
        </Marker>) : undefined
 
     if (!source) return;
-    const { drivers } = this.props
+    const { drivers } = transaction
+    console.log('drivers:', drivers)
     const driversMarkup = drivers ? drivers.map(driver => {
       return (
         <Marker
           position={driver.position}
-          icon="http://localhost:8080/images/dragon.png" />
+          icon="http://localhost:8080/images/dragon.png"
+          title={driver.name}
+          label={driver.name}
+          animation={google.maps.Animation.DROP}>
+        </Marker>
         )
     }) : undefined
+
+    const { driver } = transaction
+    console.log('driver:', driver)
+    const driverMarkup = driver ? (
+        <Marker
+          position={driver.position}
+          icon="http://localhost:8080/images/dragon.png"
+          title={driver.name}
+          label={driver.name}>
+        </Marker>
+      ) : undefined
 
     return (
       <div id='map' style={{height: '300px', width: '100%'}}>
@@ -86,12 +106,13 @@ class Map extends Component {
           }
           googleMapElement={
             <GoogleMap
-              defaultZoom={16}
+              defaultZoom={12}
               defaultCenter={transaction.source}
               onClick={::this.handleMapClick}>
                 {source}
                 {destination}
                 {driversMarkup}
+                {driverMarkup}
             </GoogleMap>
           }
         ></GoogleMapLoader>

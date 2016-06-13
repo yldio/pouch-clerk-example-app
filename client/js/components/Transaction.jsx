@@ -20,7 +20,6 @@ class Transaction extends React.Component {
     if (transaction) {
       return (
         <div>
-          <h1>Transaction #{transaction._id}</h1>
           <Map transaction={transaction}/>
           <pre><code>{JSON.stringify(transaction, null, '\t')}</code></pre>
         </div>

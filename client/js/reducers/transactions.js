@@ -13,7 +13,8 @@ export default function transactions(state = initialState, action) {
     case ADD_TRANSACTION:
       return [
         Object.assign({
-          _id: action.id
+          _id: action.id,
+          time: {},
         }, action.props),
         ...state
       ]
