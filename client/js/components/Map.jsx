@@ -108,6 +108,7 @@ class Map extends Component {
             <GoogleMap
               defaultZoom={12}
               defaultCenter={transaction.source}
+              mapTypeId={google.maps.MapTypeId.SATELLITE}
               onClick={::this.handleMapClick}>
                 {passenger}
                 {destination}

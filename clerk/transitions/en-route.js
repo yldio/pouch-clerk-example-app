@@ -10,7 +10,7 @@ module.exports = function(doc, next) {
     if (! doc.driver || ! doc.driver.position) return next(new Error('no driver position'));
 
     if (! doc.driver.speed) {
-      const dstc = diffLatLong(doc.destination, doc.driver.position)
+      const dstc = diffLatLong(doc.driver.position, doc.destination)
       doc.driver.speed = {
         lat: dstc.lat / travelTicks,
         lng: dstc.lng / travelTicks,
