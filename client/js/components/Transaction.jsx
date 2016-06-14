@@ -1,7 +1,9 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import * as TransactionActions from '../actions/transactions'
 import Map from './Map'
+import TransactionDetails from './transaction-details/index.jsx'
 
 class Transaction extends React.Component {
 
@@ -15,12 +17,13 @@ class Transaction extends React.Component {
   }
 
   render() {
-    const { transaction } = this.props
+    const { transaction, actions } = this.props
     console.log('transaction:', transaction)
     if (transaction) {
       return (
         <div>
-          <Map transaction={transaction}/>
+          <Map transaction={transaction} actions={actions}/>
+          <TransactionDetails transaction={transaction} actions={actions}/>
           <pre><code>{JSON.stringify(transaction, null, '\t')}</code></pre>
         </div>
       )
@@ -33,6 +36,11 @@ class Transaction extends React.Component {
 export default connect(
   (state, props) => {
     return { transaction: state.transactions.find(withId(props.params.id)) }
+  },
+  (dispatch) => {
+    return {
+      actions: bindActionCreators(TransactionActions, dispatch)
+    }
   }
 )(Transaction)
 

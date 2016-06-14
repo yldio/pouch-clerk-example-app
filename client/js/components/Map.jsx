@@ -1,18 +1,13 @@
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import {GoogleMapLoader, GoogleMap, Marker} from "react-google-maps"
 import {Button} from 'react-bootstrap'
-import * as TransactionActions from '../actions/transactions'
 import conf from '../../../conf'
 
-class Map extends Component {
+export default class Map extends Component {
 
   handleMapClick(event) {
-    console.log('map click', event);
     const { transaction } = this.props
     if (transaction.clerk_state.state == 'select-source') {
-      console.log(event);
       this.props.actions.editTransaction(transaction._id, {
         source: latLngFromEvent(event)
       })
@@ -24,32 +19,24 @@ class Map extends Component {
     }
   }
 
-  handleSourceSelected() {
-    this.props.actions.setTransactionState(this.props.transaction._id, 'select-destination')
-  }
+  // actionButton() {
+  //   let button = undefined
+  //   const { transaction } = this.props
+  //   switch(transaction.clerk_state.state) {
+  //     case 'select-source':
+  //       button = transaction.source ? (
+  //         <Button onClick={::this.handleSourceSelected}>Pick me up from here</Button>
+  //         ) : undefined
+  //       break;
+  //     case 'select-destination':
+  //       button = transaction.destination ? (
+  //         <Button onClick={::this.handleDestinationSelected}>Drop me there</Button>
+  //         ) : undefined
+  //       break;
+  //   }
 
-  handleDestinationSelected() {
-    this.props.actions.setTransactionState(this.props.transaction._id, 'searching-driver')
-  }
-
-  actionButton() {
-    let button = undefined
-    const { transaction } = this.props
-    switch(transaction.clerk_state.state) {
-      case 'select-source':
-        button = transaction.source ? (
-          <Button onClick={::this.handleSourceSelected}>Pick me up from here</Button>
-          ) : undefined
-        break;
-      case 'select-destination':
-        button = transaction.destination ? (
-          <Button onClick={::this.handleDestinationSelected}>Drop me there</Button>
-          ) : undefined
-        break;
-    }
-
-    return button
-  }
+  //   return button
+  // }
 
   render() {
     const { transaction } = this.props
@@ -70,7 +57,6 @@ class Map extends Component {
 
     if (!passenger) return;
     const { drivers } = transaction
-    console.log('drivers:', drivers)
     const driversMarkup = drivers ? drivers.map(driver => {
       return (
         <Marker
@@ -84,7 +70,6 @@ class Map extends Component {
     }) : undefined
 
     const { driver } = transaction
-    console.log('driver:', driver)
     const driverMarkup = driver ? (
         <Marker
           position={driver.position}
@@ -95,7 +80,7 @@ class Map extends Component {
       ) : undefined
 
     return (
-      <div id='map' style={{height: '300px', width: '100%'}}>
+      <div id='map' style={{height: '400px', width: '100%'}}>
         <GoogleMapLoader
           containerElement={
             <div
@@ -117,27 +102,10 @@ class Map extends Component {
             </GoogleMap>
           }
         ></GoogleMapLoader>
-        {this.actionButton()}
       </div>
     )
   }
 }
-
-
-function mapStateToProps(state) {
-  return {}
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(TransactionActions, dispatch)
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Map)
 
 function latLngFromEvent(event) {
   return {

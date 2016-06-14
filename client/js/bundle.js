@@ -80556,9 +80556,19 @@
 
 	var _reactRedux = __webpack_require__(168);
 
+	var _transactions = __webpack_require__(693);
+
+	var TransactionActions = _interopRequireWildcard(_transactions);
+
 	var _Map = __webpack_require__(695);
 
 	var _Map2 = _interopRequireDefault(_Map);
+
+	var _index = __webpack_require__(744);
+
+	var _index2 = _interopRequireDefault(_index);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -80618,14 +80628,17 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var transaction = this.props.transaction;
+	      var _props = this.props;
+	      var transaction = _props.transaction;
+	      var actions = _props.actions;
 
 	      console.log('transaction:', transaction);
 	      if (transaction) {
 	        return _react3.default.createElement(
 	          'div',
 	          null,
-	          _react3.default.createElement(_Map2.default, { transaction: transaction }),
+	          _react3.default.createElement(_Map2.default, { transaction: transaction, actions: actions }),
+	          _react3.default.createElement(_index2.default, { transaction: transaction, actions: actions }),
 	          _react3.default.createElement(
 	            'pre',
 	            null,
@@ -80655,6 +80668,10 @@
 
 	exports.default = (0, _reactRedux.connect)(function (state, props) {
 	  return { transaction: state.transactions.find(withId(props.params.id)) };
+	}, function (dispatch) {
+	  return {
+	    actions: (0, _redux.bindActionCreators)(TransactionActions, dispatch)
+	  };
 	})(Transaction);
 
 
@@ -80690,23 +80707,13 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _redux = __webpack_require__(175);
-
-	var _reactRedux = __webpack_require__(168);
-
 	var _reactGoogleMaps = __webpack_require__(696);
 
 	var _reactBootstrap = __webpack_require__(423);
 
-	var _transactions = __webpack_require__(693);
-
-	var TransactionActions = _interopRequireWildcard(_transactions);
-
 	var _conf = __webpack_require__(743);
 
 	var _conf2 = _interopRequireDefault(_conf);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -80747,11 +80754,9 @@
 	  _createClass(Map, [{
 	    key: 'handleMapClick',
 	    value: function handleMapClick(event) {
-	      console.log('map click', event);
 	      var transaction = this.props.transaction;
 
 	      if (transaction.clerk_state.state == 'select-source') {
-	        console.log(event);
 	        this.props.actions.editTransaction(transaction._id, {
 	          source: latLngFromEvent(event)
 	        });
@@ -80761,41 +80766,26 @@
 	        });
 	      }
 	    }
-	  }, {
-	    key: 'handleSourceSelected',
-	    value: function handleSourceSelected() {
-	      this.props.actions.setTransactionState(this.props.transaction._id, 'select-destination');
-	    }
-	  }, {
-	    key: 'handleDestinationSelected',
-	    value: function handleDestinationSelected() {
-	      this.props.actions.setTransactionState(this.props.transaction._id, 'searching-driver');
-	    }
-	  }, {
-	    key: 'actionButton',
-	    value: function actionButton() {
-	      var button = undefined;
-	      var transaction = this.props.transaction;
 
-	      switch (transaction.clerk_state.state) {
-	        case 'select-source':
-	          button = transaction.source ? _react3.default.createElement(
-	            _reactBootstrap.Button,
-	            { onClick: this.handleSourceSelected.bind(this) },
-	            'Pick me up from here'
-	          ) : undefined;
-	          break;
-	        case 'select-destination':
-	          button = transaction.destination ? _react3.default.createElement(
-	            _reactBootstrap.Button,
-	            { onClick: this.handleDestinationSelected.bind(this) },
-	            'Drop me there'
-	          ) : undefined;
-	          break;
-	      }
+	    // actionButton() {
+	    //   let button = undefined
+	    //   const { transaction } = this.props
+	    //   switch(transaction.clerk_state.state) {
+	    //     case 'select-source':
+	    //       button = transaction.source ? (
+	    //         <Button onClick={::this.handleSourceSelected}>Pick me up from here</Button>
+	    //         ) : undefined
+	    //       break;
+	    //     case 'select-destination':
+	    //       button = transaction.destination ? (
+	    //         <Button onClick={::this.handleDestinationSelected}>Drop me there</Button>
+	    //         ) : undefined
+	    //       break;
+	    //   }
 
-	      return button;
-	    }
+	    //   return button
+	    // }
+
 	  }, {
 	    key: 'render',
 	    value: function render() {
@@ -80815,7 +80805,6 @@
 	      if (!passenger) return;
 	      var drivers = transaction.drivers;
 
-	      console.log('drivers:', drivers);
 	      var driversMarkup = drivers ? drivers.map(function (driver) {
 	        return _react3.default.createElement(_reactGoogleMaps.Marker, {
 	          position: driver.position,
@@ -80827,7 +80816,6 @@
 
 	      var driver = transaction.driver;
 
-	      console.log('driver:', driver);
 	      var driverMarkup = driver ? _react3.default.createElement(_reactGoogleMaps.Marker, {
 	        position: driver.position,
 	        icon: 'http://localhost:8080/images/dragon.png',
@@ -80836,7 +80824,7 @@
 
 	      return _react3.default.createElement(
 	        'div',
-	        { id: 'map', style: { height: '300px', width: '100%' } },
+	        { id: 'map', style: { height: '400px', width: '100%' } },
 	        _react3.default.createElement(_reactGoogleMaps.GoogleMapLoader, {
 	          containerElement: _react3.default.createElement('div', _extends({}, this.props.containerElementProps, {
 	            style: {
@@ -80854,8 +80842,7 @@
 	            driversMarkup,
 	            driverMarkup
 	          )
-	        }),
-	        this.actionButton()
+	        })
 	      );
 	    }
 	  }]);
@@ -80863,17 +80850,7 @@
 	  return Map;
 	}(_react2.Component));
 
-	function mapStateToProps(state) {
-	  return {};
-	}
-
-	function mapDispatchToProps(dispatch) {
-	  return {
-	    actions: (0, _redux.bindActionCreators)(TransactionActions, dispatch)
-	  };
-	}
-
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Map);
+	exports.default = Map;
 
 
 	function latLngFromEvent(event) {
@@ -85237,6 +85214,409 @@
 	  style: 'mapbox://styles/mapbox/streets-v9'
 	};
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ },
+/* 744 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _redboxReact2 = __webpack_require__(412);
+
+	var _redboxReact3 = _interopRequireDefault(_redboxReact2);
+
+	var _react2 = __webpack_require__(1);
+
+	var _react3 = _interopRequireDefault(_react2);
+
+	var _reactTransformCatchErrors3 = __webpack_require__(418);
+
+	var _reactTransformCatchErrors4 = _interopRequireDefault(_reactTransformCatchErrors3);
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _selectSource = __webpack_require__(745);
+
+	var _selectSource2 = _interopRequireDefault(_selectSource);
+
+	var _selectDestination = __webpack_require__(746);
+
+	var _selectDestination2 = _interopRequireDefault(_selectDestination);
+
+	var _searchingDriver = __webpack_require__(747);
+
+	var _searchingDriver2 = _interopRequireDefault(_searchingDriver);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _components = {
+	  TransactionDetails: {
+	    displayName: 'TransactionDetails'
+	  }
+	};
+
+	var _reactTransformCatchErrors2 = (0, _reactTransformCatchErrors4.default)({
+	  filename: '/Users/pedroteixeira/projects/pouch-clerk-example-app/client/js/components/transaction-details/index.jsx',
+	  components: _components,
+	  locals: [],
+	  imports: [_react3.default, _redboxReact3.default]
+	});
+
+	function _wrapComponent(id) {
+	  return function (Component) {
+	    return _reactTransformCatchErrors2(Component, id);
+	  };
+	}
+
+	var stateToComponent = {
+	  'select-source': _selectSource2.default,
+	  'select-destination': _selectDestination2.default,
+	  'searching-driver': _searchingDriver2.default
+	};
+
+	var TransactionDetails = _wrapComponent('TransactionDetails')(function (_Component) {
+	  _inherits(TransactionDetails, _Component);
+
+	  function TransactionDetails() {
+	    _classCallCheck(this, TransactionDetails);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(TransactionDetails).apply(this, arguments));
+	  }
+
+	  _createClass(TransactionDetails, [{
+	    key: 'render',
+	    value: function render() {
+	      var transaction = this.props.transaction;
+
+	      var component = void 0;
+	      if (transaction && transaction.clerk_state) {
+	        var ComponentClass = stateToComponent[transaction.clerk_state.state];
+	        if (ComponentClass) {
+	          component = _react3.default.createElement(ComponentClass, this.props);
+	        }
+	      }
+
+	      return _react3.default.createElement(
+	        'div',
+	        { style: { marginLeft: '20px' } },
+	        component
+	      );
+	    }
+	  }]);
+
+	  return TransactionDetails;
+	}(_react2.Component));
+
+	exports.default = TransactionDetails;
+
+/***/ },
+/* 745 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _redboxReact2 = __webpack_require__(412);
+
+	var _redboxReact3 = _interopRequireDefault(_redboxReact2);
+
+	var _react2 = __webpack_require__(1);
+
+	var _react3 = _interopRequireDefault(_react2);
+
+	var _reactTransformCatchErrors3 = __webpack_require__(418);
+
+	var _reactTransformCatchErrors4 = _interopRequireDefault(_reactTransformCatchErrors3);
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactBootstrap = __webpack_require__(423);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _components = {
+	  SelectSource: {
+	    displayName: 'SelectSource'
+	  }
+	};
+
+	var _reactTransformCatchErrors2 = (0, _reactTransformCatchErrors4.default)({
+	  filename: '/Users/pedroteixeira/projects/pouch-clerk-example-app/client/js/components/transaction-details/select-source.jsx',
+	  components: _components,
+	  locals: [],
+	  imports: [_react3.default, _redboxReact3.default]
+	});
+
+	function _wrapComponent(id) {
+	  return function (Component) {
+	    return _reactTransformCatchErrors2(Component, id);
+	  };
+	}
+
+	var SelectSource = _wrapComponent('SelectSource')(function (_Component) {
+	  _inherits(SelectSource, _Component);
+
+	  function SelectSource() {
+	    _classCallCheck(this, SelectSource);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SelectSource).apply(this, arguments));
+	  }
+
+	  _createClass(SelectSource, [{
+	    key: 'handleSourceSelected',
+	    value: function handleSourceSelected() {
+	      this.props.actions.setTransactionState(this.props.transaction._id, 'select-destination');
+	    }
+
+	    // handleDestinationSelected() {
+	    //   this.props.actions.setTransactionState(this.props.transaction._id, 'searching-driver')
+	    // }
+
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react3.default.createElement(
+	        _reactBootstrap.Grid,
+	        null,
+	        _react3.default.createElement(
+	          _reactBootstrap.Row,
+	          null,
+	          _react3.default.createElement(
+	            _reactBootstrap.Col,
+	            null,
+	            _react3.default.createElement(
+	              _reactBootstrap.Button,
+	              {
+	                bsSize: 'large',
+	                block: true,
+	                bsStyle: 'primary',
+	                onClick: this.handleSourceSelected.bind(this) },
+	              'Pick me up from selected point'
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return SelectSource;
+	}(_react2.Component));
+
+	exports.default = SelectSource;
+
+/***/ },
+/* 746 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _redboxReact2 = __webpack_require__(412);
+
+	var _redboxReact3 = _interopRequireDefault(_redboxReact2);
+
+	var _react2 = __webpack_require__(1);
+
+	var _react3 = _interopRequireDefault(_react2);
+
+	var _reactTransformCatchErrors3 = __webpack_require__(418);
+
+	var _reactTransformCatchErrors4 = _interopRequireDefault(_reactTransformCatchErrors3);
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactBootstrap = __webpack_require__(423);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _components = {
+	  SelectDestination: {
+	    displayName: 'SelectDestination'
+	  }
+	};
+
+	var _reactTransformCatchErrors2 = (0, _reactTransformCatchErrors4.default)({
+	  filename: '/Users/pedroteixeira/projects/pouch-clerk-example-app/client/js/components/transaction-details/select-destination.jsx',
+	  components: _components,
+	  locals: [],
+	  imports: [_react3.default, _redboxReact3.default]
+	});
+
+	function _wrapComponent(id) {
+	  return function (Component) {
+	    return _reactTransformCatchErrors2(Component, id);
+	  };
+	}
+
+	var SelectDestination = _wrapComponent('SelectDestination')(function (_Component) {
+	  _inherits(SelectDestination, _Component);
+
+	  function SelectDestination() {
+	    _classCallCheck(this, SelectDestination);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SelectDestination).apply(this, arguments));
+	  }
+
+	  _createClass(SelectDestination, [{
+	    key: 'handleDestinationSelected',
+	    value: function handleDestinationSelected() {
+	      this.props.actions.setTransactionState(this.props.transaction._id, 'searching-driver');
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var transaction = this.props.transaction;
+
+	      var buttonText = transaction.destination ? 'Set destination' : 'Select destination from map';
+
+	      return _react3.default.createElement(
+	        _reactBootstrap.Grid,
+	        null,
+	        _react3.default.createElement(
+	          _reactBootstrap.Row,
+	          null,
+	          _react3.default.createElement(
+	            _reactBootstrap.Col,
+	            null,
+	            _react3.default.createElement(
+	              _reactBootstrap.Button,
+	              {
+	                bsSize: 'large',
+	                bsStyle: 'primary',
+	                block: true,
+	                disabled: !transaction.destination,
+	                onClick: this.handleDestinationSelected.bind(this) },
+	              buttonText
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return SelectDestination;
+	}(_react2.Component));
+
+	exports.default = SelectDestination;
+
+/***/ },
+/* 747 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _redboxReact2 = __webpack_require__(412);
+
+	var _redboxReact3 = _interopRequireDefault(_redboxReact2);
+
+	var _react2 = __webpack_require__(1);
+
+	var _react3 = _interopRequireDefault(_react2);
+
+	var _reactTransformCatchErrors3 = __webpack_require__(418);
+
+	var _reactTransformCatchErrors4 = _interopRequireDefault(_reactTransformCatchErrors3);
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactBootstrap = __webpack_require__(423);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _components = {
+	  SearchingDriver: {
+	    displayName: 'SearchingDriver'
+	  }
+	};
+
+	var _reactTransformCatchErrors2 = (0, _reactTransformCatchErrors4.default)({
+	  filename: '/Users/pedroteixeira/projects/pouch-clerk-example-app/client/js/components/transaction-details/searching-driver.jsx',
+	  components: _components,
+	  locals: [],
+	  imports: [_react3.default, _redboxReact3.default]
+	});
+
+	function _wrapComponent(id) {
+	  return function (Component) {
+	    return _reactTransformCatchErrors2(Component, id);
+	  };
+	}
+
+	var SearchingDriver = _wrapComponent('SearchingDriver')(function (_Component) {
+	  _inherits(SearchingDriver, _Component);
+
+	  function SearchingDriver() {
+	    _classCallCheck(this, SearchingDriver);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SearchingDriver).apply(this, arguments));
+	  }
+
+	  _createClass(SearchingDriver, [{
+	    key: 'render',
+	    value: function render() {
+	      return _react3.default.createElement(
+	        _reactBootstrap.Grid,
+	        null,
+	        _react3.default.createElement(
+	          _reactBootstrap.Row,
+	          null,
+	          _react3.default.createElement(
+	            _reactBootstrap.Col,
+	            null,
+	            _react3.default.createElement(_reactBootstrap.Image, { src: '/images/waiting.gif' }),
+	            _react3.default.createElement(
+	              'span',
+	              null,
+	              'Searching for a driver, please wait...'
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return SearchingDriver;
+	}(_react2.Component));
+
+	exports.default = SearchingDriver;
 
 /***/ }
 /******/ ]);
