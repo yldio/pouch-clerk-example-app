@@ -80,7 +80,7 @@ export default class Map extends Component {
       ) : undefined
 
     return (
-      <div id='map' style={{height: '400px', width: '100%'}}>
+      <div id='map' style={{height: '350px', width: '100%'}}>
         <GoogleMapLoader
           containerElement={
             <div
