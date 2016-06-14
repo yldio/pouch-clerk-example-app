@@ -20,9 +20,12 @@ module.exports = function(doc, next) {
     doc.driver.position.lat -= doc.driver.speed.lat
     doc.driver.position.lng -= doc.driver.speed.lng
 
-    var distanceAfter = Math.abs(distance(doc.driver.position, doc.source));
+    var distanceAfter = distance(doc.driver.position, doc.source);
 
     doc.distance = distanceAfter
+
+    const absSpeed = distance(doc.driver.speed)
+    doc.eta_pickup = 1000 * doc.distance / absSpeed
 
     if (distanceAfter < arrivedMinimumDistance) {
       if (! doc.time) {
@@ -44,6 +47,12 @@ function diffLatLong(from, to) {
 }
 
 function distance(from, to) {
+  if (! to) {
+    to = {
+      lat: 0,
+      lng: 0,
+    }
+  }
   const vec = diffLatLong(from, to)
   return Math.sqrt(Math.pow(vec.lat, 2) + Math.pow(vec.lng, 2));
 }

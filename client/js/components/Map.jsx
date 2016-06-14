@@ -53,9 +53,9 @@ class Map extends Component {
 
   render() {
     const { transaction } = this.props
-    const source = transaction.source ? (
+    const passenger = transaction.passenger ? (
       <Marker
-        position={transaction.source}
+        position={transaction.passenger.position}
         icon="http://localhost:8080/images/person.png"
         title="Me"
         label="Me">
@@ -68,7 +68,7 @@ class Map extends Component {
         label='Destination'>
        </Marker>) : undefined
 
-    if (!source) return;
+    if (!passenger) return;
     const { drivers } = transaction
     console.log('drivers:', drivers)
     const driversMarkup = drivers ? drivers.map(driver => {
@@ -109,7 +109,7 @@ class Map extends Component {
               defaultZoom={12}
               defaultCenter={transaction.source}
               onClick={::this.handleMapClick}>
-                {source}
+                {passenger}
                 {destination}
                 {driversMarkup}
                 {driverMarkup}

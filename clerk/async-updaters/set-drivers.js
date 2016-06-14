@@ -49,7 +49,7 @@ function fakeDriver(pos) {
 }
 
 function randomDistance() {
-  return (Math.random() * maxDistance) - maxDistance
+  return (Math.random() * maxDistance) - maxDistance / 2
 }
 
 function randomDragonName() {

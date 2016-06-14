@@ -10,6 +10,9 @@ export function addTransaction(cb) {
           clerk_state: {
             state: 'select-source'
           },
+          passenger: {
+            position: {lat: coords.latitude, lng: coords.longitude}
+          },
           source: {lat: coords.latitude, lng: coords.longitude}
         }
 

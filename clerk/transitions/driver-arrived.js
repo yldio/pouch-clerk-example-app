@@ -2,7 +2,9 @@
 
 module.exports = function(doc, next) {
   setTimeout(() => {
-    doc.time.pickup = Date.now();
-    next(null, 'en-route');
+    delete doc.eta_pickup
+    delete doc.driver.speed
+    doc.time.pickup = Date.now()
+    next(null, 'en-route')
   }, 5000)
 }

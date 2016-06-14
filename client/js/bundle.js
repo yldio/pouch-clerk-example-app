@@ -80498,6 +80498,9 @@
 	          clerk_state: {
 	            state: 'select-source'
 	          },
+	          passenger: {
+	            position: { lat: coords.latitude, lng: coords.longitude }
+	          },
 	          source: { lat: coords.latitude, lng: coords.longitude }
 	        };
 
@@ -80798,8 +80801,8 @@
 	    value: function render() {
 	      var transaction = this.props.transaction;
 
-	      var source = transaction.source ? _react3.default.createElement(_reactGoogleMaps.Marker, {
-	        position: transaction.source,
+	      var passenger = transaction.passenger ? _react3.default.createElement(_reactGoogleMaps.Marker, {
+	        position: transaction.passenger.position,
 	        icon: 'http://localhost:8080/images/person.png',
 	        title: 'Me',
 	        label: 'Me' }) : undefined;
@@ -80809,7 +80812,7 @@
 	        title: 'Destination',
 	        label: 'Destination' }) : undefined;
 
-	      if (!source) return;
+	      if (!passenger) return;
 	      var drivers = transaction.drivers;
 
 	      console.log('drivers:', drivers);
@@ -80845,7 +80848,7 @@
 	              defaultZoom: 12,
 	              defaultCenter: transaction.source,
 	              onClick: this.handleMapClick.bind(this) },
-	            source,
+	            passenger,
 	            destination,
 	            driversMarkup,
 	            driverMarkup
