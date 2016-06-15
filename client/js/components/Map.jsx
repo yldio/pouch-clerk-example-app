@@ -6,37 +6,23 @@ import conf from '../../../conf'
 export default class Map extends Component {
 
   handleMapClick(event) {
+    console.log('map click');
     const { transaction } = this.props
+    const latLng = latLngFromEvent(event)
     if (transaction.clerk_state.state == 'select-source') {
       this.props.actions.editTransaction(transaction._id, {
-        source: latLngFromEvent(event)
+        source: latLng,
+        passenger: {
+          position: latLng,
+        },
       })
     } else if (transaction.clerk_state.state == 'select-destination') {
       this.props.actions.editTransaction(transaction._id, {
-        destination: latLngFromEvent(event)
+        destination: latLng,
       })
 
     }
   }
-
-  // actionButton() {
-  //   let button = undefined
-  //   const { transaction } = this.props
-  //   switch(transaction.clerk_state.state) {
-  //     case 'select-source':
-  //       button = transaction.source ? (
-  //         <Button onClick={::this.handleSourceSelected}>Pick me up from here</Button>
-  //         ) : undefined
-  //       break;
-  //     case 'select-destination':
-  //       button = transaction.destination ? (
-  //         <Button onClick={::this.handleDestinationSelected}>Drop me there</Button>
-  //         ) : undefined
-  //       break;
-  //   }
-
-  //   return button
-  // }
 
   render() {
     const { transaction } = this.props
@@ -48,6 +34,8 @@ export default class Map extends Component {
         label="Me">
        </Marker>) : undefined
 
+    if (!passenger) return;
+
     const destination = transaction.destination ? (
       <Marker
         position={transaction.destination}
@@ -55,7 +43,6 @@ export default class Map extends Component {
         label='Destination'>
        </Marker>) : undefined
 
-    if (!passenger) return;
     const { drivers } = transaction
     const driversMarkup = drivers ? drivers.map(driver => {
       return (
@@ -92,8 +79,7 @@ export default class Map extends Component {
           googleMapElement={
             <GoogleMap
               defaultZoom={12}
-              defaultCenter={transaction.source}
-              mapTypeId={google.maps.MapTypeId.SATELLITE}
+              defaultCenter={transaction.passenger.position}
               onClick={::this.handleMapClick}>
                 {passenger}
                 {destination}

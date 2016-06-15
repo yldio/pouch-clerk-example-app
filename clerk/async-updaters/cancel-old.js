@@ -11,10 +11,6 @@ module.exports = {
       }
     })
   },
-
-  stop: function() {
-    clearInterval(this._interval);
-  },
 }
 
 function outdated(doc) {

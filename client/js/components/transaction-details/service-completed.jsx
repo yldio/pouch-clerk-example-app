@@ -8,10 +8,10 @@ export default class ServiceCompleted extends Component {
     return (
       <Grid>
         <Row>
-          <Col sm={18} md={9}>
-            <h3>ServiceCompleted</h3>
+          <Col sm={9} md={9}>
+            <h3>Service completed!</h3>
           </Col>
-          <Col sm={6} md={3}>
+          <Col sm={3} md={3}>
             <Driver transaction={this.props.transaction} />
           </Col>
         </Row>

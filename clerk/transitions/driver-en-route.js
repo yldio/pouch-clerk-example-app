@@ -2,6 +2,8 @@
 
 // driver-en-route
 
+const geo = require('../../lib/geo')
+
 const travelTicks = 10;
 const arrivedMinimumDistance = 0.001;
 
@@ -10,7 +12,7 @@ module.exports = function(doc, next) {
     if (! doc.driver || ! doc.driver.position) return next(new Error('no driver position'));
 
     if (! doc.driver.speed) {
-      const dstc = diffLatLong(doc.source, doc.driver.position)
+      const dstc = geo.diffLatLong(doc.source, doc.driver.position)
       doc.driver.speed = {
         lat: dstc.lat / travelTicks,
         lng: dstc.lng / travelTicks,
@@ -20,11 +22,11 @@ module.exports = function(doc, next) {
     doc.driver.position.lat -= doc.driver.speed.lat
     doc.driver.position.lng -= doc.driver.speed.lng
 
-    var distanceAfter = distance(doc.driver.position, doc.source);
+    var distanceAfter = geo.distance(doc.driver.position, doc.source);
 
     doc.distance = distanceAfter
 
-    const absSpeed = distance(doc.driver.speed)
+    const absSpeed = geo.distance(doc.driver.speed)
     doc.eta_pickup = 1000 * doc.distance / absSpeed
 
     if (distanceAfter < arrivedMinimumDistance) {

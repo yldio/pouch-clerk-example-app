@@ -24,17 +24,7 @@ class App extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {}
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(SessionActions, dispatch)
-  }
-}
-
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+  _ => { return {} },
+  dispatch => { return {actions: bindActionCreators(SessionActions, dispatch)} }
 )(App)

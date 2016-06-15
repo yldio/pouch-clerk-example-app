@@ -17,9 +17,7 @@ class NewTransaction extends Component {
     return (
       <div>
         <form onSubmit={::this.beginTransaction}>
-          <center>
-            <Button bsStyle="primary" onClick={::this.beginTransaction}>Request Dragon</Button>
-          </center>
+          <Button bsStyle="primary" bsSize="large" block style={{marginTop: '20px'}} onClick={::this.beginTransaction}>Request Dragon</Button>
         </form>
       </div>
     )

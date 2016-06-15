@@ -34,6 +34,6 @@ export default class TransactionDetails extends Component {
       }
     }
 
-    return (<div style={{marginLeft: '15px'}}>{component}</div>)
+    return (<div>{component}</div>)
   }
 }

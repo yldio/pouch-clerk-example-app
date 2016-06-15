@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "express": "^4.13.4",
-    "pouch-clerk": "^0.3.3",
+    "pouch-clerk": "^0.3.4",
     "pouch-websocket-sync": "^0.2.1",
     "pouchdb": "^5.3.2",
     "react-router-bootstrap": "^0.23.0"
