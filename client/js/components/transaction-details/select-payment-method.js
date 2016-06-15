@@ -36,9 +36,10 @@ export default class SelectPaymentMethod extends Component {
         </Modal.Header>
 
         <Modal.Body>
-          <p>Estimate: {cost_estimate.value} {cost_estimate.currency}</p>
+          <p>The estimate for your trip is <en>{cost_estimate.value} {cost_estimate.currency}</en>.</p>
           <p>
-            <label>Select payment method: </label>
+            <label>Please select a payment method:</label>
+            &nbsp;
             <DropdownButton
             id="select-payment-method"
             title={transaction.payment_method || 'select'}

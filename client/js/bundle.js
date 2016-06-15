@@ -85259,10 +85259,6 @@
 
 	var _finished2 = _interopRequireDefault(_finished);
 
-	var _serviceCompleted = __webpack_require__(857);
-
-	var _serviceCompleted2 = _interopRequireDefault(_serviceCompleted);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -85300,7 +85296,7 @@
 	  'driver-arrived': _driverArrived2.default,
 	  'en-route': _enRoute2.default,
 	  'arrived-destination': _arrivedDestination2.default,
-	  'service-completed': _serviceCompleted2.default,
+	  'service-completed': _finished2.default,
 	  'finished': _finished2.default
 	};
 
@@ -85836,7 +85832,7 @@
 	        _react3.default.createElement(
 	          'h4',
 	          null,
-	          'Your driver'
+	          'Your dragon'
 	        ),
 	        _react3.default.createElement(
 	          _reactBootstrap.Thumbnail,
@@ -100135,11 +100131,33 @@
 	  }
 
 	  _createClass(Finished, [{
+	    key: 'handleDone',
+	    value: function handleDone() {
+	      this.props.actions.setTransactionState(this.props.transaction._id, 'finished');
+	      var router = this.context.router;
+
+	      setTimeout(function (_) {
+	        router.push({ pathname: '/transactions/new' });
+	      }, 3000);
+	    }
+	  }, {
+	    key: 'handleOnStarClick',
+	    value: function handleOnStarClick(rating) {
+	      var _this2 = this;
+
+	      return function (_) {
+	        _this2.props.actions.editTransaction(_this2.props.transaction._id, {
+	          rating: rating
+	        });
+	      };
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var transaction = this.props.transaction;
 	      var time = transaction.time;
 	      var cost = transaction.cost;
+	      var rating = transaction.rating;
 
 	      var metrics = {
 	        you_waited: diff(time.started, time.driver_arrived),
@@ -100147,76 +100165,114 @@
 	        trip: diff(time.pickup, time.arrived),
 	        cost: cost.value + ' ' + cost.currency
 	      };
-	      return _react3.default.createElement(
-	        _reactBootstrap.Grid,
+	      var stars = [];
+	      for (var i = 1; i <= 5; i++) {
+	        if (rating >= i) {
+	          stars.push(_react3.default.createElement('i', {
+	            style: {
+	              fontSize: '2em',
+	              fontColor: 'yellow'
+	            },
+	            className: 'fa fa-star', key: i,
+	            onClick: this.handleOnStarClick.call(this, i) }));
+	        } else {
+	          stars.push(_react3.default.createElement('i', {
+	            style: { fontSize: '2em' },
+	            className: 'fa fa-star-o', key: i,
+	            onClick: this.handleOnStarClick.call(this, i) }));
+	        }
+	      }
+
+	      var footer = transaction.clerk_state.state == 'service-completed' && rating ? _react3.default.createElement(
+	        _reactBootstrap.Modal.Footer,
 	        null,
 	        _react3.default.createElement(
-	          _reactBootstrap.Row,
+	          _reactBootstrap.Button,
+	          {
+	            bsStyle: 'primary',
+	            disabled: !transaction.rating,
+	            onClick: this.handleDone.bind(this)
+	          },
+	          'Done'
+	        )
+	      ) : undefined;
+
+	      return _react3.default.createElement(
+	        _reactBootstrap.Modal.Dialog,
+	        null,
+	        _react3.default.createElement(
+	          _reactBootstrap.Modal.Header,
 	          null,
 	          _react3.default.createElement(
-	            _reactBootstrap.Col,
-	            { sm: 9, md: 9 },
+	            _reactBootstrap.Modal.Title,
+	            null,
+	            'Your trip is finished!'
+	          )
+	        ),
+	        _react3.default.createElement(
+	          _reactBootstrap.Modal.Body,
+	          null,
+	          _react3.default.createElement(
+	            'p',
+	            null,
+	            'You ',
 	            _react3.default.createElement(
-	              'h3',
+	              'b',
 	              null,
-	              'Your trip has finished'
+	              'waited ',
+	              metrics.you_waited
 	            ),
-	            _react3.default.createElement(
-	              'p',
-	              null,
-	              'You ',
-	              _react3.default.createElement(
-	                'b',
-	                null,
-	                'waited ',
-	                metrics.you_waited
-	              ),
-	              ' for a dragon to arrive.'
-	            ),
-	            _react3.default.createElement(
-	              'p',
-	              null,
-	              transaction.driver.name,
-	              ' ',
-	              _react3.default.createElement(
-	                'b',
-	                null,
-	                'waited ',
-	                metrics.driver_waited
-	              ),
-	              ' for you at the pickup spot.'
-	            ),
-	            _react3.default.createElement(
-	              'p',
-	              null,
-	              transaction.driver.name,
-	              ' ',
-	              _react3.default.createElement(
-	                'b',
-	                null,
-	                'took ',
-	                metrics.trip
-	              ),
-	              ' to get you to your destination.'
-	            ),
-	            _react3.default.createElement(
-	              'p',
-	              null,
-	              'Your trip costed you ',
-	              _react3.default.createElement(
-	                'b',
-	                null,
-	                metrics.cost
-	              ),
-	              '.'
-	            )
+	            ' for a dragon to arrive.'
 	          ),
 	          _react3.default.createElement(
-	            _reactBootstrap.Col,
-	            { sm: 3, md: 3 },
-	            _react3.default.createElement(_Driver2.default, { transaction: this.props.transaction })
+	            'p',
+	            null,
+	            transaction.driver.name,
+	            ' ',
+	            _react3.default.createElement(
+	              'b',
+	              null,
+	              'waited ',
+	              metrics.driver_waited
+	            ),
+	            ' for you at the pickup spot.'
+	          ),
+	          _react3.default.createElement(
+	            'p',
+	            null,
+	            transaction.driver.name,
+	            ' ',
+	            _react3.default.createElement(
+	              'b',
+	              null,
+	              'took ',
+	              metrics.trip
+	            ),
+	            ' to get you to your destination.'
+	          ),
+	          _react3.default.createElement(
+	            'p',
+	            null,
+	            'Your trip costed you ',
+	            _react3.default.createElement(
+	              'b',
+	              null,
+	              metrics.cost
+	            ),
+	            '.'
+	          ),
+	          _react3.default.createElement(
+	            'p',
+	            null,
+	            _react3.default.createElement(
+	              'label',
+	              null,
+	              'Please rate your experience:'
+	            ),
+	            stars
 	          )
-	        )
+	        ),
+	        footer
 	      );
 	    }
 	  }]);
@@ -100226,111 +100282,18 @@
 
 	exports.default = Finished;
 
+	// ask for `router` from context
+
+	Finished.contextTypes = {
+	  router: _react2.PropTypes.object
+	};
 
 	function diff(from, to) {
 	  return _moment2.default.duration(to - from).humanize();
 	}
 
 /***/ },
-/* 857 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _redboxReact2 = __webpack_require__(412);
-
-	var _redboxReact3 = _interopRequireDefault(_redboxReact2);
-
-	var _react2 = __webpack_require__(1);
-
-	var _react3 = _interopRequireDefault(_react2);
-
-	var _reactTransformCatchErrors3 = __webpack_require__(418);
-
-	var _reactTransformCatchErrors4 = _interopRequireDefault(_reactTransformCatchErrors3);
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _reactBootstrap = __webpack_require__(423);
-
-	var _Driver = __webpack_require__(749);
-
-	var _Driver2 = _interopRequireDefault(_Driver);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var _components = {
-	  ServiceCompleted: {
-	    displayName: 'ServiceCompleted'
-	  }
-	};
-
-	var _reactTransformCatchErrors2 = (0, _reactTransformCatchErrors4.default)({
-	  filename: '/Users/pedroteixeira/projects/pouch-clerk-example-app/client/js/components/transaction-details/service-completed.jsx',
-	  components: _components,
-	  locals: [],
-	  imports: [_react3.default, _redboxReact3.default]
-	});
-
-	function _wrapComponent(id) {
-	  return function (Component) {
-	    return _reactTransformCatchErrors2(Component, id);
-	  };
-	}
-
-	var ServiceCompleted = _wrapComponent('ServiceCompleted')(function (_Component) {
-	  _inherits(ServiceCompleted, _Component);
-
-	  function ServiceCompleted() {
-	    _classCallCheck(this, ServiceCompleted);
-
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ServiceCompleted).apply(this, arguments));
-	  }
-
-	  _createClass(ServiceCompleted, [{
-	    key: 'render',
-	    value: function render() {
-	      return _react3.default.createElement(
-	        _reactBootstrap.Grid,
-	        null,
-	        _react3.default.createElement(
-	          _reactBootstrap.Row,
-	          null,
-	          _react3.default.createElement(
-	            _reactBootstrap.Col,
-	            { sm: 9, md: 9 },
-	            _react3.default.createElement(
-	              'h3',
-	              null,
-	              'Service completed!'
-	            )
-	          ),
-	          _react3.default.createElement(
-	            _reactBootstrap.Col,
-	            { sm: 3, md: 3 },
-	            _react3.default.createElement(_Driver2.default, { transaction: this.props.transaction })
-	          )
-	        )
-	      );
-	    }
-	  }]);
-
-	  return ServiceCompleted;
-	}(_react2.Component));
-
-	exports.default = ServiceCompleted;
-
-/***/ },
+/* 857 */,
 /* 858 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -114253,10 +114216,15 @@
 	          _react3.default.createElement(
 	            'p',
 	            null,
-	            'Estimate: ',
-	            cost_estimate.value,
-	            ' ',
-	            cost_estimate.currency
+	            'The estimate for your trip is ',
+	            _react3.default.createElement(
+	              'en',
+	              null,
+	              cost_estimate.value,
+	              ' ',
+	              cost_estimate.currency
+	            ),
+	            '.'
 	          ),
 	          _react3.default.createElement(
 	            'p',
@@ -114264,8 +114232,9 @@
 	            _react3.default.createElement(
 	              'label',
 	              null,
-	              'Select payment method: '
+	              'Please select a payment method:'
 	            ),
+	            ' ',
 	            _react3.default.createElement(
 	              _reactBootstrap.DropdownButton,
 	              {

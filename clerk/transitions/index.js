@@ -8,7 +8,6 @@ const states = [
   'driver-arrived',
   'en-route',
   'arrived-destination',
-  'service-completed',
   ]
 
 states.forEach(module => {

@@ -9,7 +9,6 @@ import DriverArrived from './driver-arrived'
 import EnRoute from './en-route'
 import ArrivedDestination from './arrived-destination'
 import Finished from './finished'
-import ServiceCompleted from './service-completed'
 
 const stateToComponent = {
   'select-payment-method': SelectPaymentMethod,
@@ -21,7 +20,7 @@ const stateToComponent = {
   'driver-arrived': DriverArrived,
   'en-route': EnRoute,
   'arrived-destination': ArrivedDestination,
-  'service-completed': ServiceCompleted,
+  'service-completed': Finished,
   'finished': Finished,
 }
 

@@ -18,7 +18,7 @@ export default class Driver extends Component {
     const { transaction } = this.props
     return (
       <div>
-        <h4>Your driver</h4>
+        <h4>Your dragon</h4>
         <Thumbnail src="/images/dragon-face.jpg">
           <h4>{transaction.driver.name}</h4>
           {this.arrivalTime()}
