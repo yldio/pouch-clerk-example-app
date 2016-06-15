@@ -28,7 +28,7 @@ export default function(session) {
         remove: doc => options.dispatch({type: types.DELETE_TRANSACTION, id: doc._id}),
         insert: doc => options.dispatch({type: types.INSERT_TRANSACTION, transaction: doc}),
         update: doc => options.dispatch({type: types.UPDATE_TRANSACTION, transaction: doc}),
-      }
+      },
     })(options)(next)
 
     syncClient = PouchSync.createClient()

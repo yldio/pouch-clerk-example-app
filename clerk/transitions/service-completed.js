@@ -7,5 +7,5 @@ module.exports = function(doc, next) {
       currency: 'GBP',
     }
     next(null, 'finished')
-  }, 5000)
+  }, 1000)
 }

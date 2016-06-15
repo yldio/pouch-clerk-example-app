@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import SelectPaymentMethod from './select-payment-method'
 import SelectSource from './select-source'
 import SelectDestination from './select-destination'
 import SearchingDriver from './searching-driver'
@@ -11,6 +12,7 @@ import Finished from './finished'
 import ServiceCompleted from './service-completed'
 
 const stateToComponent = {
+  'select-payment-method': SelectPaymentMethod,
   'select-source': SelectSource,
   'select-destination': SelectDestination,
   'searching-driver': SearchingDriver,

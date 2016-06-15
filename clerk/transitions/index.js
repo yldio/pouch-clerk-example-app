@@ -1,6 +1,7 @@
 exports = module.exports = {};
 
 const states = [
+  'get-estimate',
   'searching-driver',
   'driver-assigned',
   'driver-en-route',

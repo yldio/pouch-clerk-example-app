@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 export default class SelectDestination extends Component {
 
   handleDestinationSelected() {
-    this.props.actions.setTransactionState(this.props.transaction._id, 'searching-driver')
+    this.props.actions.setTransactionState(this.props.transaction._id, 'get-estimate')
   }
 
   render() {

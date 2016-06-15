@@ -85219,6 +85219,10 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _selectPaymentMethod = __webpack_require__(961);
+
+	var _selectPaymentMethod2 = _interopRequireDefault(_selectPaymentMethod);
+
 	var _selectSource = __webpack_require__(745);
 
 	var _selectSource2 = _interopRequireDefault(_selectSource);
@@ -85287,6 +85291,7 @@
 	}
 
 	var stateToComponent = {
+	  'select-payment-method': _selectPaymentMethod2.default,
 	  'select-source': _selectSource2.default,
 	  'select-destination': _selectDestination2.default,
 	  'searching-driver': _searchingDriver2.default,
@@ -85503,7 +85508,7 @@
 	  _createClass(SelectDestination, [{
 	    key: 'handleDestinationSelected',
 	    value: function handleDestinationSelected() {
-	      this.props.actions.setTransactionState(this.props.transaction._id, 'searching-driver');
+	      this.props.actions.setTransactionState(this.props.transaction._id, 'get-estimate');
 	    }
 	  }, {
 	    key: 'render',
@@ -114125,9 +114130,174 @@
 	      lng: 0
 	    };
 	  }
+	  if (!from) {
+	    from = {
+	      lat: 0,
+	      lng: 0
+	    };
+	  }
 	  var vec = diffLatLong(from, to);
 	  return Math.sqrt(Math.pow(vec.lat, 2) + Math.pow(vec.lng, 2));
 	}
+
+/***/ },
+/* 961 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _redboxReact2 = __webpack_require__(412);
+
+	var _redboxReact3 = _interopRequireDefault(_redboxReact2);
+
+	var _react2 = __webpack_require__(1);
+
+	var _react3 = _interopRequireDefault(_react2);
+
+	var _reactTransformCatchErrors3 = __webpack_require__(418);
+
+	var _reactTransformCatchErrors4 = _interopRequireDefault(_reactTransformCatchErrors3);
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactBootstrap = __webpack_require__(423);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _components = {
+	  SelectPaymentMethod: {
+	    displayName: 'SelectPaymentMethod'
+	  }
+	};
+
+	var _reactTransformCatchErrors2 = (0, _reactTransformCatchErrors4.default)({
+	  filename: '/Users/pedroteixeira/projects/pouch-clerk-example-app/client/js/components/transaction-details/select-payment-method.js',
+	  components: _components,
+	  locals: [],
+	  imports: [_react3.default, _redboxReact3.default]
+	});
+
+	function _wrapComponent(id) {
+	  return function (Component) {
+	    return _reactTransformCatchErrors2(Component, id);
+	  };
+	}
+
+	var SelectPaymentMethod = _wrapComponent('SelectPaymentMethod')(function (_Component) {
+	  _inherits(SelectPaymentMethod, _Component);
+
+	  function SelectPaymentMethod() {
+	    _classCallCheck(this, SelectPaymentMethod);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SelectPaymentMethod).apply(this, arguments));
+	  }
+
+	  _createClass(SelectPaymentMethod, [{
+	    key: 'handleSelectPaymentMethod',
+	    value: function handleSelectPaymentMethod(paymentMethod) {
+	      this.props.actions.editTransaction(this.props.transaction._id, {
+	        payment_method: paymentMethod
+	      });
+	    }
+	  }, {
+	    key: 'handlePaymentMethodConfirmed',
+	    value: function handlePaymentMethodConfirmed() {
+	      this.props.actions.setTransactionState(this.props.transaction._id, 'searching-driver');
+	    }
+
+	    // handleDestinationSelected() {
+	    //   this.props.actions.setTransactionState(this.props.transaction._id, 'searching-driver')
+	    // }
+
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var transaction = this.props.transaction;
+	      var cost_estimate = transaction.cost_estimate;
+
+	      var paymentMethods = transaction.payment_methods.map(function (paymentMethod) {
+	        return _react3.default.createElement(
+	          _reactBootstrap.MenuItem,
+	          {
+	            key: paymentMethod,
+	            eventKey: paymentMethod
+	          },
+	          paymentMethod
+	        );
+	      });
+	      return _react3.default.createElement(
+	        _reactBootstrap.Modal.Dialog,
+	        null,
+	        _react3.default.createElement(
+	          _reactBootstrap.Modal.Header,
+	          null,
+	          _react3.default.createElement(
+	            _reactBootstrap.Modal.Title,
+	            null,
+	            'Select payment method'
+	          )
+	        ),
+	        _react3.default.createElement(
+	          _reactBootstrap.Modal.Body,
+	          null,
+	          _react3.default.createElement(
+	            'p',
+	            null,
+	            'Estimate: ',
+	            cost_estimate.value,
+	            ' ',
+	            cost_estimate.currency
+	          ),
+	          _react3.default.createElement(
+	            'p',
+	            null,
+	            _react3.default.createElement(
+	              'label',
+	              null,
+	              'Select payment method: '
+	            ),
+	            _react3.default.createElement(
+	              _reactBootstrap.DropdownButton,
+	              {
+	                id: 'select-payment-method',
+	                title: transaction.payment_method || 'select',
+	                onSelect: this.handleSelectPaymentMethod.bind(this)
+	              },
+	              paymentMethods
+	            )
+	          )
+	        ),
+	        _react3.default.createElement(
+	          _reactBootstrap.Modal.Footer,
+	          null,
+	          _react3.default.createElement(
+	            _reactBootstrap.Button,
+	            {
+	              bsStyle: 'primary',
+	              disabled: !transaction.payment_method,
+	              onClick: this.handlePaymentMethodConfirmed.bind(this)
+	            },
+	            'Confirm Payment Method'
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return SelectPaymentMethod;
+	}(_react2.Component));
+
+	exports.default = SelectPaymentMethod;
 
 /***/ }
 /******/ ]);

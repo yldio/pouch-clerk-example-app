@@ -44,4 +44,4 @@ module.exports = function(doc, next) {
     } else {
       next(null, 'en-route', true);
     }
-  }, 1000)}
+  }, 100)}
