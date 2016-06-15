@@ -10,7 +10,9 @@ class SyncStatus extends React.Component {
       case 'paused':
         symbol = (<i className='fa fa-pause'></i>)
         break;
+      case 'active':
       case 'change':
+      case 'complete':
         symbol = (<i className='fa fa-bolt'></i>)
         break;
       case 'error':

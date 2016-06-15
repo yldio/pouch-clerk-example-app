@@ -22448,7 +22448,7 @@
 	    syncClient = _pouchWebsocketSync2.default.createClient();
 
 	    sync = syncClient.connect('ws://localhost:3001').on('error', function (err) {
-	      options.dispatch({ type: types.SET_ERROR, error: err });
+	      console.log(err);
 	    }).sync(db, {
 	      remoteName: dbName
 	    });
@@ -22460,7 +22460,7 @@
 	    });
 
 	    sync.on('error', function (err) {
-	      return options.dispatch({ type: types.SET_ERROR, error: err });
+	      return console.log(err);
 	    });
 
 	    clientEvents.forEach(function (event) {
@@ -80076,7 +80076,9 @@
 	        case 'paused':
 	          symbol = _react3.default.createElement('i', { className: 'fa fa-pause' });
 	          break;
+	        case 'active':
 	        case 'change':
+	        case 'complete':
 	          symbol = _react3.default.createElement('i', { className: 'fa fa-bolt' });
 	          break;
 	        case 'error':

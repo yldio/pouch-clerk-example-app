@@ -34,7 +34,7 @@ export default function(session) {
     sync = syncClient.
       connect('ws://localhost:3001').
       on('error', function(err) {
-        options.dispatch({ type: types.SET_ERROR, error: err})
+        console.log(err);
       }).
       sync(db, {
         remoteName: dbName,
@@ -46,7 +46,7 @@ export default function(session) {
       })
     })
 
-    sync.on('error', err => options.dispatch({ type: types.SET_ERROR, error: err }))
+    sync.on('error', err => console.log(err))
 
     clientEvents.forEach(function(event) {
       syncClient.on(event, function() {
