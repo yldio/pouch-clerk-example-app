@@ -16,8 +16,6 @@ export default function(session) {
   var next
 
   session.on('new', function(user) {
-    console.log('new session')
-
     const dbName = user + '-transactions';
     const db = DB(dbName)
 
@@ -36,7 +34,7 @@ export default function(session) {
     sync = syncClient.
       connect('ws://localhost:3001').
       on('error', function(err) {
-        console.log('error on websocker connection:', err);
+        options.dispatch({ type: types.SET_ERROR, error: err})
       }).
       sync(db, {
         remoteName: dbName,
@@ -44,16 +42,15 @@ export default function(session) {
 
     syncEvents.forEach(function(event) {
       sync.on(event, function() {
-        console.log('sync event:', event)
-        options.dispatch({type: types.SET_SYNC_STATE, text: event})
+        options.dispatch({type: types.SET_SYNC_STATE, sync: event})
       })
     })
 
-    sync.on('error', err => console.log(err.stack))
+    sync.on('error', err => options.dispatch({ type: types.SET_ERROR, error: err }))
 
     clientEvents.forEach(function(event) {
       syncClient.on(event, function() {
-        options.dispatch({type: types.SET_SYNC_STATE, text: event})
+        options.dispatch({type: types.SET_SYNC_STATE, client: event})
       })
     })
   })

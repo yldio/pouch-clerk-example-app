@@ -25,14 +25,12 @@ export function startSession(form, cb) {
     setTimeout(() => {
       sessionDB.get('session', function(err, session) {
         if (err && err.status !== 404) {
-          console.log(err)
           dispatch({ type: types.SET_ERROR, error: err })
         } else {
           if (! session) { session = { _id: 'session' } }
           session.username = form.username
           sessionDB.put(session, function(err) {
             if (err) {
-              console.log(err)
               dispatch({ type: types.SET_ERROR, error: err })
             } else {
               dispatch({ type: types.SET_SESSION_USER, username: form.username })
@@ -48,13 +46,11 @@ export function startSession(form, cb) {
 
 export function endSession() {
   return (dispatch) => {
-    console.log('will remove session')
     sessionDB.get('session', (error, session) => {
       if (error) {
         dispatch({ type: types.ERROR, error })
       } else {
         sessionDB.remove(session, (err) => {
-          console.log('removed session', err)
           dispatch({ type: types.END_SESSION })
         })
       }

@@ -1,13 +1,17 @@
 import { SET_SYNC_STATE } from '../constants/ActionTypes'
 
 const initialState = {
-  text: 'unknown'
+  client: 'unknown',
+  sync: 'unknown',
 }
 
 export default function syncState(state = initialState, action) {
   switch (action.type) {
     case SET_SYNC_STATE:
-      return { text: action.text }
+      return Object.assign({
+        client: state.client,
+        sync: state.unknown,
+      }, action);
 
     default:
       return state

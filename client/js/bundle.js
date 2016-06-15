@@ -22121,7 +22121,8 @@
 	  },
 	  transactions: [],
 	  syncState: {
-	    text: 'unknown'
+	    client: 'unknown',
+	    sync: 'unknown'
 	  },
 	  error: undefined
 	};
@@ -22354,7 +22355,8 @@
 	var _ActionTypes = __webpack_require__(195);
 
 	var initialState = {
-	  text: 'unknown'
+	  client: 'unknown',
+	  sync: 'unknown'
 	};
 
 	function syncState() {
@@ -22363,7 +22365,10 @@
 
 	  switch (action.type) {
 	    case _ActionTypes.SET_SYNC_STATE:
-	      return { text: action.text };
+	      return Object.assign({
+	        client: state.client,
+	        sync: state.unknown
+	      }, action);
 
 	    default:
 	      return state;
@@ -22421,8 +22426,6 @@
 	  var next;
 
 	  session.on('new', function (user) {
-	    console.log('new session');
-
 	    var dbName = user + '-transactions';
 	    var db = (0, _db.get)(dbName);
 
@@ -22445,25 +22448,24 @@
 	    syncClient = _pouchWebsocketSync2.default.createClient();
 
 	    sync = syncClient.connect('ws://localhost:3001').on('error', function (err) {
-	      console.log('error on websocker connection:', err);
+	      options.dispatch({ type: types.SET_ERROR, error: err });
 	    }).sync(db, {
 	      remoteName: dbName
 	    });
 
 	    syncEvents.forEach(function (event) {
 	      sync.on(event, function () {
-	        console.log('sync event:', event);
-	        options.dispatch({ type: types.SET_SYNC_STATE, text: event });
+	        options.dispatch({ type: types.SET_SYNC_STATE, sync: event });
 	      });
 	    });
 
 	    sync.on('error', function (err) {
-	      return console.log(err.stack);
+	      return options.dispatch({ type: types.SET_ERROR, error: err });
 	    });
 
 	    clientEvents.forEach(function (event) {
 	      syncClient.on(event, function () {
-	        options.dispatch({ type: types.SET_SYNC_STATE, text: event });
+	        options.dispatch({ type: types.SET_SYNC_STATE, client: event });
 	      });
 	    });
 	  });
@@ -79968,7 +79970,6 @@
 	    setTimeout(function () {
 	      sessionDB.get('session', function (err, session) {
 	        if (err && err.status !== 404) {
-	          console.log(err);
 	          dispatch({ type: types.SET_ERROR, error: err });
 	        } else {
 	          if (!session) {
@@ -79977,7 +79978,6 @@
 	          session.username = form.username;
 	          sessionDB.put(session, function (err) {
 	            if (err) {
-	              console.log(err);
 	              dispatch({ type: types.SET_ERROR, error: err });
 	            } else {
 	              dispatch({ type: types.SET_SESSION_USER, username: form.username });
@@ -79992,13 +79992,11 @@
 
 	function endSession() {
 	  return function (dispatch) {
-	    console.log('will remove session');
 	    sessionDB.get('session', function (error, session) {
 	      if (error) {
 	        dispatch({ type: types.ERROR, error: error });
 	      } else {
 	        sessionDB.remove(session, function (err) {
-	          console.log('removed session', err);
 	          dispatch({ type: types.END_SESSION });
 	        });
 	      }
@@ -80074,16 +80072,14 @@
 	    key: 'render',
 	    value: function render() {
 	      var symbol;
-	      console.log(this.props.state);
-	      switch (this.props.state) {
+	      switch (this.props.state.sync) {
 	        case 'paused':
 	          symbol = _react3.default.createElement('i', { className: 'fa fa-pause' });
 	          break;
 	        case 'change':
 	          symbol = _react3.default.createElement('i', { className: 'fa fa-bolt' });
 	          break;
-	        case 'disconnect':
-	        case 'reconnect':
+	        case 'error':
 	          symbol = _react3.default.createElement('i', { className: 'fa fa-times', style: { color: 'red' } });
 	          break;
 	        default:
@@ -80103,7 +80099,7 @@
 	}(_react3.default.Component));
 
 	exports.default = (0, _reactRedux.connect)(function (state) {
-	  return { state: state.syncState.text };
+	  return { state: state.syncState };
 	})(SyncStatus);
 
 /***/ },
@@ -80259,7 +80255,7 @@
 	  };
 	}
 
-	var importantStates = ['connect', 'disconnect'];
+	var importantStates = ['disconnect', 'reconnect'];
 
 	var NetworkWarning = _wrapComponent('NetworkWarning')(function (_Component) {
 	  _inherits(NetworkWarning, _Component);
@@ -80273,10 +80269,9 @@
 	  _createClass(NetworkWarning, [{
 	    key: 'render',
 	    value: function render() {
-	      console.log('propos:', this.props);
-	      var syncState = this.props.syncState;
+	      var client = this.props.syncState.client;
 
-	      if (importantStates.indexOf(syncState.text) >= 0) {
+	      if (importantStates.indexOf(client) >= 0) {
 	        return _react3.default.createElement(
 	          _reactBootstrap.Alert,
 	          {
@@ -80284,7 +80279,7 @@
 	          _react3.default.createElement(
 	            'p',
 	            null,
-	            syncState.text
+	            'Disconnected from sync service. Trying to reconnect...'
 	          )
 	        );
 	      } else return _react3.default.createElement('div', null);
@@ -80539,7 +80534,6 @@
 	  _createClass(NewSession, [{
 	    key: 'handleInputChange',
 	    value: function handleInputChange(event) {
-	      console.log('input change');
 	      this.setState(_defineProperty({}, event.target.name, event.target.value));
 	    }
 	  }, {
@@ -80549,7 +80543,6 @@
 	      var router = this.context.router;
 
 	      event.preventDefault();
-	      console.log('submit, state = ', this.state);
 	      this.props.actions.startSession(this.state, function () {
 	        router.push({ pathname: '/transactions/new' });
 	      });
@@ -80901,7 +80894,6 @@
 	      var transaction = _props.transaction;
 	      var actions = _props.actions;
 
-	      console.log('transaction:', transaction);
 	      if (transaction) {
 	        return _react3.default.createElement(
 	          'div',
@@ -81023,7 +81015,6 @@
 	  _createClass(Map, [{
 	    key: 'handleMapClick',
 	    value: function handleMapClick(event) {
-	      console.log('map click');
 	      var transaction = this.props.transaction;
 
 	      var latLng = latLngFromEvent(event);

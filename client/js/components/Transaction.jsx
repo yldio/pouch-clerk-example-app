@@ -18,7 +18,6 @@ class Transaction extends React.Component {
 
   render() {
     const { transaction, actions } = this.props
-    console.log('transaction:', transaction)
     if (transaction) {
       return (
         <div>

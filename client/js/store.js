@@ -13,7 +13,8 @@ const initialState = {
   },
   transactions: [],
   syncState: {
-    text: 'unknown'
+    client: 'unknown',
+    sync: 'unknown'
   },
   error: undefined
 }

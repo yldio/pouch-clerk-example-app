@@ -6,16 +6,14 @@ class SyncStatus extends React.Component {
 
   render() {
     var symbol;
-    console.log(this.props.state)
-    switch(this.props.state) {
+    switch(this.props.state.sync) {
       case 'paused':
         symbol = (<i className='fa fa-pause'></i>)
         break;
       case 'change':
         symbol = (<i className='fa fa-bolt'></i>)
         break;
-      case 'disconnect':
-      case 'reconnect':
+      case 'error':
         symbol = (<i className='fa fa-times' style={{ color: 'red' }}></i>)
         break;
       default:
@@ -28,5 +26,5 @@ class SyncStatus extends React.Component {
 }
 
 export default connect(
-  state => { return { state: state.syncState.text } }
+  state => { return { state: state.syncState } }
 )(SyncStatus)

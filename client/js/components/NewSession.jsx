@@ -11,7 +11,6 @@ class NewSession extends Component {
   }
 
   handleInputChange (event) {
-    console.log('input change');
     this.setState({
       [event.target.name]: event.target.value
     })
@@ -21,7 +20,6 @@ class NewSession extends Component {
     const { actions } = this.props
     const { router } = this.context
     event.preventDefault()
-    console.log('submit, state = ', this.state)
     this.props.actions.startSession(this.state, () => {
       router.push({pathname: '/transactions/new'})
     })

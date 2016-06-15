@@ -6,7 +6,6 @@ import conf from '../../../conf'
 export default class Map extends Component {
 
   handleMapClick(event) {
-    console.log('map click');
     const { transaction } = this.props
     const latLng = latLngFromEvent(event)
     if (transaction.clerk_state.state == 'select-source') {
