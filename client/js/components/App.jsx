@@ -4,6 +4,7 @@ import {IndexLink} from 'react-router'
 import { connect } from 'react-redux'
 import NavBar from './NavBar.jsx'
 import Error from './Error.jsx'
+import NetworkWarning from './NetworkWarning.jsx'
 import * as SessionActions from '../actions/session'
 import * as ErrorActions from '../actions/error'
 
@@ -20,6 +21,7 @@ class App extends Component {
         <NavBar />
         <div className="container" style={{marginTop: '55px'}}>
           <Error error={this.props.error} actions={this.props.errorActions} />
+          <NetworkWarning syncState={this.props.syncState} />
           {this.props.children}
         </div>
       </div>
@@ -28,7 +30,12 @@ class App extends Component {
 }
 
 export default connect(
-  state => { return { error: state.error } },
+  state => {
+    return {
+      error: state.error,
+      syncState: state.syncState,
+    }
+  },
   dispatch => {
     return {
       actions: bindActionCreators(SessionActions, dispatch),

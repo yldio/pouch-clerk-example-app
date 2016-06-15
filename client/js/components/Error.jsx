@@ -10,7 +10,6 @@ export default class Error extends Component {
   render() {
     const { error } = this.props.error
     if (error) {
-      console.log('error:', error)
       return (
         <Alert
           bsStyle="danger"
@@ -19,7 +18,8 @@ export default class Error extends Component {
           <p>{error.message}</p>
         </Alert>
       )
+    } else {
+      return (<div></div>)
     }
-    return (<div></div>)
   }
 }
