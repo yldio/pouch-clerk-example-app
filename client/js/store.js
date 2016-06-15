@@ -14,7 +14,8 @@ const initialState = {
   transactions: [],
   syncState: {
     text: 'unknown'
-  }
+  },
+  error: undefined
 }
 
 export default function configureStore() {

@@ -21,7 +21,7 @@ export function addTransaction(cb) {
         dispatch({ type: types.ADD_TRANSACTION, id, props: transaction })
       });
     } else {
-      dispatch({type: types.ERROR, message: 'No geolocation'})
+      dispatch({type: types.SET_ERROR, error: {message: 'No geolocation'}})
     }
   }
 }

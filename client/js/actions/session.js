@@ -7,7 +7,7 @@ export function loadSession() {
   return (dispatch) => {
     sessionDB.get('session', function(err, session) {
       if (err) {
-        dispatch({ type: types.ERROR, error: err})
+        dispatch({ type: types.SET_ERROR, error: err})
       } else if (session) {
         dispatch({ type: types.SET_SESSION_USER, username: session.username})
       } else {
@@ -26,14 +26,14 @@ export function startSession(form, cb) {
       sessionDB.get('session', function(err, session) {
         if (err && err.status !== 404) {
           console.log(err)
-          dispatch({ type: types.ERROR, error: err })
+          dispatch({ type: types.SET_ERROR, error: err })
         } else {
           if (! session) { session = { _id: 'session' } }
           session.username = form.username
           sessionDB.put(session, function(err) {
             if (err) {
               console.log(err)
-              dispatch({ type: types.ERROR, error: err })
+              dispatch({ type: types.SET_ERROR, error: err })
             } else {
               dispatch({ type: types.SET_SESSION_USER, username: form.username })
               if (cb) cb()

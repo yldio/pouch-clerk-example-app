@@ -22122,7 +22122,8 @@
 	  transactions: [],
 	  syncState: {
 	    text: 'unknown'
-	  }
+	  },
+	  error: undefined
 	};
 
 	function configureStore() {
@@ -22142,7 +22143,8 @@
 	  value: true
 	});
 	// ERROR
-	var ERROR = exports.ERROR = 'ERROR';
+	var SET_ERROR = exports.SET_ERROR = 'SET_ERROR';
+	var CLEAR_ERROR = exports.CLEAR_ERROR = 'CLEAR_ERROR';
 
 	// SESSION
 	var START_SESSION = exports.START_SESSION = 'START_SESSION';
@@ -22212,10 +22214,14 @@
 
 	var _syncState2 = _interopRequireDefault(_syncState);
 
+	var _error = __webpack_require__(962);
+
+	var _error2 = _interopRequireDefault(_error);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = (0, _redux.combineReducers)({
-	  transactions: _transactions2.default, session: _session2.default, syncState: _syncState2.default
+	  transactions: _transactions2.default, session: _session2.default, syncState: _syncState2.default, error: _error2.default
 	});
 
 /***/ },
@@ -22357,7 +22363,6 @@
 
 	  switch (action.type) {
 	    case _ActionTypes.SET_SYNC_STATE:
-	      console.log('setting sync state', action.text);
 	      return { text: action.text };
 
 	    default:
@@ -59050,9 +59055,17 @@
 
 	var _NavBar2 = _interopRequireDefault(_NavBar);
 
+	var _Error = __webpack_require__(963);
+
+	var _Error2 = _interopRequireDefault(_Error);
+
 	var _session = __webpack_require__(688);
 
 	var SessionActions = _interopRequireWildcard(_session);
+
+	var _error = __webpack_require__(964);
+
+	var ErrorActions = _interopRequireWildcard(_error);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -59104,7 +59117,8 @@
 	        _react3.default.createElement(_NavBar2.default, null),
 	        _react3.default.createElement(
 	          'div',
-	          { className: 'container', style: { marginTop: '40px' } },
+	          { className: 'container', style: { marginTop: '55px' } },
+	          _react3.default.createElement(_Error2.default, { error: this.props.error, actions: this.props.errorActions }),
 	          this.props.children
 	        )
 	      );
@@ -59114,10 +59128,13 @@
 	  return App;
 	}(_react2.Component));
 
-	exports.default = (0, _reactRedux.connect)(function (_) {
-	  return {};
+	exports.default = (0, _reactRedux.connect)(function (state) {
+	  return { error: state.error };
 	}, function (dispatch) {
-	  return { actions: (0, _redux.bindActionCreators)(SessionActions, dispatch) };
+	  return {
+	    actions: (0, _redux.bindActionCreators)(SessionActions, dispatch),
+	    errorActions: (0, _redux.bindActionCreators)(ErrorActions, dispatch)
+	  };
 	})(App);
 
 /***/ },
@@ -79892,7 +79909,7 @@
 	  return function (dispatch) {
 	    sessionDB.get('session', function (err, session) {
 	      if (err) {
-	        dispatch({ type: types.ERROR, error: err });
+	        dispatch({ type: types.SET_ERROR, error: err });
 	      } else if (session) {
 	        dispatch({ type: types.SET_SESSION_USER, username: session.username });
 	      } else {
@@ -79911,7 +79928,7 @@
 	      sessionDB.get('session', function (err, session) {
 	        if (err && err.status !== 404) {
 	          console.log(err);
-	          dispatch({ type: types.ERROR, error: err });
+	          dispatch({ type: types.SET_ERROR, error: err });
 	        } else {
 	          if (!session) {
 	            session = { _id: 'session' };
@@ -79920,7 +79937,7 @@
 	          sessionDB.put(session, function (err) {
 	            if (err) {
 	              console.log(err);
-	              dispatch({ type: types.ERROR, error: err });
+	              dispatch({ type: types.SET_ERROR, error: err });
 	            } else {
 	              dispatch({ type: types.SET_SESSION_USER, username: form.username });
 	              if (cb) cb();
@@ -80506,7 +80523,7 @@
 	        dispatch({ type: types.ADD_TRANSACTION, id: id, props: transaction });
 	      });
 	    } else {
-	      dispatch({ type: types.ERROR, message: 'No geolocation' });
+	      dispatch({ type: types.SET_ERROR, error: { message: 'No geolocation' } });
 	    }
 	  };
 	}
@@ -114267,6 +114284,165 @@
 	}(_react2.Component));
 
 	exports.default = SelectPaymentMethod;
+
+/***/ },
+/* 962 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = syncState;
+
+	var _ActionTypes = __webpack_require__(195);
+
+	var initialState = {
+	  error: undefined
+	};
+
+	function syncState() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? initialState : arguments[0];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case _ActionTypes.SET_ERROR:
+	      return { error: { message: action.error.message } };
+
+	    case _ActionTypes.CLEAR_ERROR:
+	      return { error: undefined };
+
+	    default:
+	      return state;
+	  }
+	}
+
+/***/ },
+/* 963 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _redboxReact2 = __webpack_require__(412);
+
+	var _redboxReact3 = _interopRequireDefault(_redboxReact2);
+
+	var _react2 = __webpack_require__(1);
+
+	var _react3 = _interopRequireDefault(_react2);
+
+	var _reactTransformCatchErrors3 = __webpack_require__(418);
+
+	var _reactTransformCatchErrors4 = _interopRequireDefault(_reactTransformCatchErrors3);
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _reactBootstrap = __webpack_require__(423);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var _components = {
+	  Error: {
+	    displayName: 'Error'
+	  }
+	};
+
+	var _reactTransformCatchErrors2 = (0, _reactTransformCatchErrors4.default)({
+	  filename: '/Users/pedroteixeira/projects/pouch-clerk-example-app/client/js/components/Error.jsx',
+	  components: _components,
+	  locals: [],
+	  imports: [_react3.default, _redboxReact3.default]
+	});
+
+	function _wrapComponent(id) {
+	  return function (Component) {
+	    return _reactTransformCatchErrors2(Component, id);
+	  };
+	}
+
+	var Error = _wrapComponent('Error')(function (_Component) {
+	  _inherits(Error, _Component);
+
+	  function Error() {
+	    _classCallCheck(this, Error);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Error).apply(this, arguments));
+	  }
+
+	  _createClass(Error, [{
+	    key: 'handleDismiss',
+	    value: function handleDismiss() {
+	      this.props.actions.clearError();
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var error = this.props.error.error;
+
+	      if (error) {
+	        console.log('error:', error);
+	        return _react3.default.createElement(
+	          _reactBootstrap.Alert,
+	          {
+	            bsStyle: 'danger',
+	            onDismiss: this.handleDismiss.bind(this) },
+	          _react3.default.createElement(
+	            'h4',
+	            null,
+	            'Error'
+	          ),
+	          _react3.default.createElement(
+	            'p',
+	            null,
+	            error.message
+	          )
+	        );
+	      }
+	      return _react3.default.createElement('div', null);
+	    }
+	  }]);
+
+	  return Error;
+	}(_react2.Component));
+
+	exports.default = Error;
+
+/***/ },
+/* 964 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.setError = setError;
+	exports.clearError = clearError;
+
+	var _ActionTypes = __webpack_require__(195);
+
+	var types = _interopRequireWildcard(_ActionTypes);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function setError(error) {
+	  return { type: types.SET_ERROR, error: error };
+	}
+
+	function clearError() {
+	  return { type: types.CLEAR_ERROR };
+	}
 
 /***/ }
 /******/ ]);
