@@ -22421,29 +22421,27 @@
 	exports.default = function (session) {
 	  var sync;
 	  var syncClient;
-	  var mw;
-	  var options;
-	  var next;
+	  var replaceableMiddleware = (0, _reduxReplaceableMiddleware2.default)();
 
 	  session.on('new', function (user) {
 	    var dbName = user + '-transactions';
 	    var db = (0, _db.get)(dbName);
 
-	    mw = (0, _pouchReduxMiddleware2.default)({
+	    replaceableMiddleware.replaceBy((0, _pouchReduxMiddleware2.default)({
 	      path: '/transactions',
 	      db: db,
 	      actions: {
 	        remove: function remove(doc) {
-	          return options.dispatch({ type: types.DELETE_TRANSACTION, id: doc._id });
+	          return replaceableMiddleware.options.dispatch({ type: types.DELETE_TRANSACTION, id: doc._id });
 	        },
 	        insert: function insert(doc) {
-	          return options.dispatch({ type: types.INSERT_TRANSACTION, transaction: doc });
+	          return replaceableMiddleware.options.dispatch({ type: types.INSERT_TRANSACTION, transaction: doc });
 	        },
 	        update: function update(doc) {
-	          return options.dispatch({ type: types.UPDATE_TRANSACTION, transaction: doc });
+	          return replaceableMiddleware.options.dispatch({ type: types.UPDATE_TRANSACTION, transaction: doc });
 	        }
 	      }
-	    })(options)(next);
+	    }));
 
 	    syncClient = _pouchWebsocketSync2.default.createClient();
 
@@ -22455,7 +22453,7 @@
 
 	    syncEvents.forEach(function (event) {
 	      sync.on(event, function () {
-	        options.dispatch({ type: types.SET_SYNC_STATE, sync: event });
+	        replaceableMiddleware.options.dispatch({ type: types.SET_SYNC_STATE, sync: event });
 	      });
 	    });
 
@@ -22465,7 +22463,7 @@
 
 	    clientEvents.forEach(function (event) {
 	      syncClient.on(event, function () {
-	        options.dispatch({ type: types.SET_SYNC_STATE, client: event });
+	        replaceableMiddleware.options.dispatch({ type: types.SET_SYNC_STATE, client: event });
 	      });
 	    });
 	  });
@@ -22475,29 +22473,20 @@
 	    syncClient.destroy();
 	  });
 
-	  /* wrap middleware */
-	  return function (_options) {
-	    options = _options;
-	    return function (_next) {
-	      next = _next;
-	      return function (action) {
-	        if (mw) {
-	          return mw(action);
-	        } else {
-	          return _next(action);
-	        }
-	      };
-	    };
-	  };
+	  return replaceableMiddleware;
 	};
 
 	var _pouchWebsocketSync = __webpack_require__(203);
 
 	var _pouchWebsocketSync2 = _interopRequireDefault(_pouchWebsocketSync);
 
-	var _pouchReduxMiddleware = __webpack_require__(325);
+	var _pouchReduxMiddleware = __webpack_require__(324);
 
 	var _pouchReduxMiddleware2 = _interopRequireDefault(_pouchReduxMiddleware);
+
+	var _reduxReplaceableMiddleware = __webpack_require__(333);
+
+	var _reduxReplaceableMiddleware2 = _interopRequireDefault(_reduxReplaceableMiddleware);
 
 	var _db = __webpack_require__(334);
 
@@ -22516,42 +22505,30 @@
 /* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports.createServer = __webpack_require__(204);
-	exports.createClient = __webpack_require__(324);
+	exports.createClient = __webpack_require__(204);
 
 
 /***/ },
 /* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var websocket = __webpack_require__(205);
+	var Websocket = __webpack_require__(205);
 	var PouchSync = __webpack_require__(264);
 
-	var ignoreErrorMessages = [
-	  'write after end',
-	  'not opened',
-	];
+	module.exports = createClient;
 
-	module.exports = createServer;
-
-	function createServer(httpServer, onRequest) {
-	  if (! httpServer) {
-	    throw new Error('need a base HTTP server as first argument');
-	  }
-	  var wsserver = websocket.createServer({server: httpServer}, handle);
-	  return wsserver;
-
-	  function handle(stream) {
-	    stream.on('error', propagateError);
-	    var server = PouchSync.createServer(onRequest);
-	    server.on('error', propagateError);
-	    stream.pipe(server).pipe(stream);
-	  }
+	function createClient() {
+	  var client = PouchSync.createClient(function connect(address) {
+	    var ws = Websocket(address);
+	    ws.on('error', onError);
+	    return ws;
+	  });
+	  return client;
 
 	  /* istanbul ignore next */
-	  function propagateError(err) {
-	    if (ignoreErrorMessages.indexOf(err.message) < 0) {
-	      wsserver.emit('error', err);
+	  function onError(err) {
+	    if (err.message !== 'write after end') {
+	      client.emit('error', err);
 	    }
 	  }
 	}
@@ -39072,36 +39049,10 @@
 /* 324 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Websocket = __webpack_require__(205);
-	var PouchSync = __webpack_require__(264);
-
-	module.exports = createClient;
-
-	function createClient() {
-	  var client = PouchSync.createClient(function connect(address) {
-	    var ws = Websocket(address);
-	    ws.on('error', onError);
-	    return ws;
-	  });
-	  return client;
-
-	  /* istanbul ignore next */
-	  function onError(err) {
-	    if (err.message !== 'write after end') {
-	      client.emit('error', err);
-	    }
-	  }
-	}
-
-
-/***/ },
-/* 325 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var jPath = __webpack_require__(326);
-	var Queue = __webpack_require__(329);
-	var extend = __webpack_require__(330);
-	var equal = __webpack_require__(331);
+	var jPath = __webpack_require__(325);
+	var Queue = __webpack_require__(328);
+	var extend = __webpack_require__(329);
+	var equal = __webpack_require__(330);
 
 	module.exports = createPouchMiddleware;
 
@@ -39270,7 +39221,7 @@
 
 
 /***/ },
-/* 326 */
+/* 325 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, module) {/*jshint laxcomma: true*/
@@ -39315,7 +39266,7 @@
 						if (conflictPtr) { ptr = conflictPtr; }
 					});
 			} else if (true) {
-				ptr = __webpack_require__(328);
+				ptr = __webpack_require__(327);
 			} else {
 				throw new Error('Missing JsonPointer (https://github.com/flitbit/json-ptr).');
 			}
@@ -39905,10 +39856,10 @@
 		}
 	}(typeof JsonPointer !== 'undefined' ? JsonPointer : null));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(327)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(326)(module)))
 
 /***/ },
-/* 327 */
+/* 326 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -39924,7 +39875,7 @@
 
 
 /***/ },
-/* 328 */
+/* 327 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, module) {/* jshint laxbreak: true, laxcomma: true*/
@@ -40164,10 +40115,10 @@
 		}
 	}());
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(327)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(326)(module)))
 
 /***/ },
-/* 329 */
+/* 328 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var EventEmitter = __webpack_require__(219).EventEmitter;
@@ -40221,7 +40172,7 @@
 	}
 
 /***/ },
-/* 330 */
+/* 329 */
 /***/ function(module, exports) {
 
 	module.exports = extend
@@ -40246,12 +40197,12 @@
 
 
 /***/ },
-/* 331 */
+/* 330 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var pSlice = Array.prototype.slice;
-	var objectKeys = __webpack_require__(332);
-	var isArguments = __webpack_require__(333);
+	var objectKeys = __webpack_require__(331);
+	var isArguments = __webpack_require__(332);
 
 	var deepEqual = module.exports = function (actual, expected, opts) {
 	  if (!opts) opts = {};
@@ -40346,7 +40297,7 @@
 
 
 /***/ },
-/* 332 */
+/* 331 */
 /***/ function(module, exports) {
 
 	exports = module.exports = typeof Object.keys === 'function'
@@ -40361,7 +40312,7 @@
 
 
 /***/ },
-/* 333 */
+/* 332 */
 /***/ function(module, exports) {
 
 	var supportsArgumentsClass = (function(){
@@ -40385,6 +40336,49 @@
 	    false;
 	};
 
+
+/***/ },
+/* 333 */
+/***/ function(module, exports) {
+
+	module.exports = createMiddleware;
+
+	function createMiddleware(_mw) {
+	  var options, next;
+	  var mw = _mw;
+
+	  create.replaceBy = replaceBy;
+
+	  return create;
+
+	  function replaceBy(_mw) {
+	    mw = _mw(options)(next);
+	  }
+
+	  function create(_options) {
+	    create.options = options = _options;
+
+	    if(mw) {
+	      mw = mw(options);
+	    }
+
+	    return function(_next) {
+	      next = _next;
+
+	      if (mw) {
+	        mw = mw(next);
+	      }
+
+	      return function(action) {
+	        if (mw) {
+	          return mw(action);
+	        } else {
+	          return next(action);
+	        }
+	      };
+	    };
+	  };
+	}
 
 /***/ },
 /* 334 */
@@ -90329,7 +90323,7 @@
 	    return _moment;
 
 	}));
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(327)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(326)(module)))
 
 /***/ },
 /* 756 */
@@ -104218,7 +104212,7 @@
 	    return _moment;
 
 	}));
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(327)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(326)(module)))
 
 /***/ },
 /* 859 */
