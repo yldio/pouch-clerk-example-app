@@ -68,11 +68,11 @@
 
 	var _Home2 = _interopRequireDefault(_Home);
 
-	var _NewSession = __webpack_require__(695);
+	var _NewSession = __webpack_require__(696);
 
 	var _NewSession2 = _interopRequireDefault(_NewSession);
 
-	var _NewTransaction = __webpack_require__(696);
+	var _NewTransaction = __webpack_require__(697);
 
 	var _NewTransaction2 = _interopRequireDefault(_NewTransaction);
 
@@ -60351,6 +60351,10 @@
 
 	var SessionActions = _interopRequireWildcard(_session);
 
+	var _transactions = __webpack_require__(695);
+
+	var TransactionActions = _interopRequireWildcard(_transactions);
+
 	var _SyncStatus = __webpack_require__(690);
 
 	var _SyncStatus2 = _interopRequireDefault(_SyncStatus);
@@ -60399,8 +60403,18 @@
 	      var router = this.context.router;
 
 	      event.preventDefault();
-	      this.props.actions.endSession();
+	      this.props.sessionActions.endSession();
 	      router.push({ pathname: '/' });
+	    }
+	  }, {
+	    key: 'onNewTransaction',
+	    value: function onNewTransaction(event) {
+	      var _this2 = this;
+
+	      event.preventDefault();
+	      this.props.transactionActions.addTransaction(function (id) {
+	        _this2.context.router.push({ pathname: '/transactions/' + id });
+	      });
 	    }
 	  }, {
 	    key: 'render',
@@ -60441,7 +60455,7 @@
 	          { to: { pathname: '/transactions/new' } },
 	          _react3.default.createElement(
 	            _reactBootstrap.NavItem,
-	            { eventKey: 1, href: '/transactions/new' },
+	            { eventKey: 1, onClick: this.onNewTransaction.bind(this) },
 	            'New Transaction'
 	          )
 	        )
@@ -60494,19 +60508,16 @@
 	  router: _react2.PropTypes.object
 	};
 
-	function mapStateToProps(state) {
-	  return {
-	    session: state.session
-	  };
-	}
-
 	function mapDispatchToProps(dispatch) {
 	  return {
-	    actions: (0, _redux.bindActionCreators)(SessionActions, dispatch)
+	    sessionActions: (0, _redux.bindActionCreators)(SessionActions, dispatch),
+	    transactionActions: (0, _redux.bindActionCreators)(TransactionActions, dispatch)
 	  };
 	}
 
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(NavBar);
+	exports.default = (0, _reactRedux.connect)(function (state) {
+	  return { session: state.session };
+	}, mapDispatchToProps)(NavBar);
 
 /***/ },
 /* 421 */
@@ -80349,6 +80360,10 @@
 
 	var SessionActions = _interopRequireWildcard(_session);
 
+	var _transactions = __webpack_require__(695);
+
+	var TransactionActions = _interopRequireWildcard(_transactions);
+
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -80390,14 +80405,29 @@
 	  _createClass(Home, [{
 	    key: 'onLogout',
 	    value: function onLogout(event) {
-	      this.props.actions.endSession();
+	      event.preventDefault();
+	      this.props.sessionActions.endSession();
+	    }
+	  }, {
+	    key: 'onStartTransaction',
+	    value: function onStartTransaction(event) {
+	      var _this2 = this;
+
+	      event.preventDefault();
+	      this.props.transactionActions.addTransaction(function (id) {
+	        _this2.context.router.push({ pathname: '/transactions/' + id });
+	      });
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var startLink = this.props.sessionState === 'logged out' ? undefined : _react3.default.createElement(
 	        _reactBootstrap.Button,
-	        { bsStyle: 'primary', bsSize: 'large', block: true, href: '/transactions/new' },
+	        {
+	          bsStyle: 'primary',
+	          bsSize: 'large',
+	          block: true,
+	          onClick: this.onStartTransaction.bind(this) },
 	        'Request Dragon'
 	      );
 
@@ -80438,15 +80468,21 @@
 	  return Home;
 	}(_react3.default.Component));
 
+	// ask for `router` from context
+
+
+	Home.contextTypes = {
+	  router: _react2.PropTypes.object
+	};
+
 	function mapStateToProps(state) {
-	  return {
-	    sessionState: state.session.state
-	  };
+	  return { sessionState: state.session.state };
 	}
 
 	function mapDispatchToProps(dispatch) {
 	  return {
-	    actions: (0, _redux.bindActionCreators)(SessionActions, dispatch)
+	    sessionActions: (0, _redux.bindActionCreators)(SessionActions, dispatch),
+	    transactionActions: (0, _redux.bindActionCreators)(TransactionActions, dispatch)
 	  };
 	}
 
@@ -80454,6 +80490,70 @@
 
 /***/ },
 /* 695 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.addTransaction = addTransaction;
+	exports.setTransactionState = setTransactionState;
+	exports.deleteTransaction = deleteTransaction;
+	exports.editTransaction = editTransaction;
+
+	var _ActionTypes = __webpack_require__(195);
+
+	var types = _interopRequireWildcard(_ActionTypes);
+
+	var _db = __webpack_require__(334);
+
+	var DB = _interopRequireWildcard(_db);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function addTransaction(cb) {
+	  return function (dispatch) {
+	    if ('geolocation' in navigator) {
+	      navigator.geolocation.getCurrentPosition(function (position) {
+	        var coords = position.coords;
+
+	        var transaction = {
+	          clerk_state: {
+	            state: 'select-source'
+	          },
+	          passenger: {
+	            position: { lat: coords.latitude, lng: coords.longitude }
+	          },
+	          source: { lat: coords.latitude, lng: coords.longitude }
+	        };
+
+	        var id = Date.now().toString();
+	        if (cb) {
+	          cb(id);
+	        }
+	        dispatch({ type: types.ADD_TRANSACTION, id: id, props: transaction });
+	      });
+	    } else {
+	      dispatch({ type: types.SET_ERROR, error: { message: 'No geolocation' } });
+	    }
+	  };
+	}
+
+	function setTransactionState(id, state) {
+	  return { type: types.SET_TRANSACTION_STATE, id: id, state: state };
+	}
+
+	function deleteTransaction(id) {
+	  return { type: types.DELETE_TRANSACTION, id: id };
+	}
+
+	function editTransaction(id, props) {
+	  return { type: types.EDIT_TRANSACTION, id: id, props: props };
+	}
+
+/***/ },
+/* 696 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80598,7 +80698,7 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(NewSession);
 
 /***/ },
-/* 696 */
+/* 697 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80625,7 +80725,7 @@
 
 	var _reactRedux = __webpack_require__(168);
 
-	var _transactions = __webpack_require__(697);
+	var _transactions = __webpack_require__(695);
 
 	var TransactionActions = _interopRequireWildcard(_transactions);
 
@@ -80723,70 +80823,6 @@
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(NewTransaction);
 
 /***/ },
-/* 697 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.addTransaction = addTransaction;
-	exports.setTransactionState = setTransactionState;
-	exports.deleteTransaction = deleteTransaction;
-	exports.editTransaction = editTransaction;
-
-	var _ActionTypes = __webpack_require__(195);
-
-	var types = _interopRequireWildcard(_ActionTypes);
-
-	var _db = __webpack_require__(334);
-
-	var DB = _interopRequireWildcard(_db);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function addTransaction(cb) {
-	  return function (dispatch) {
-	    if ('geolocation' in navigator) {
-	      navigator.geolocation.getCurrentPosition(function (position) {
-	        var coords = position.coords;
-
-	        var transaction = {
-	          clerk_state: {
-	            state: 'select-source'
-	          },
-	          passenger: {
-	            position: { lat: coords.latitude, lng: coords.longitude }
-	          },
-	          source: { lat: coords.latitude, lng: coords.longitude }
-	        };
-
-	        var id = Date.now().toString();
-	        if (cb) {
-	          cb(id);
-	        }
-	        dispatch({ type: types.ADD_TRANSACTION, id: id, props: transaction });
-	      });
-	    } else {
-	      dispatch({ type: types.SET_ERROR, error: { message: 'No geolocation' } });
-	    }
-	  };
-	}
-
-	function setTransactionState(id, state) {
-	  return { type: types.SET_TRANSACTION_STATE, id: id, state: state };
-	}
-
-	function deleteTransaction(id) {
-	  return { type: types.DELETE_TRANSACTION, id: id };
-	}
-
-	function editTransaction(id, props) {
-	  return { type: types.EDIT_TRANSACTION, id: id, props: props };
-	}
-
-/***/ },
 /* 698 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -80814,7 +80850,7 @@
 
 	var _reactRedux = __webpack_require__(168);
 
-	var _transactions = __webpack_require__(697);
+	var _transactions = __webpack_require__(695);
 
 	var TransactionActions = _interopRequireWildcard(_transactions);
 

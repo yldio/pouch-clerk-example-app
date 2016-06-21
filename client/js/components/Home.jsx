@@ -1,19 +1,33 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import {Link} from 'react-router'
 import {Button} from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as SessionActions from '../actions/session'
+import * as TransactionActions from '../actions/transactions'
 
 class Home extends React.Component {
 
   onLogout(event) {
-    this.props.actions.endSession()
+    event.preventDefault()
+    this.props.sessionActions.endSession()
+  }
+
+  onStartTransaction(event) {
+    event.preventDefault()
+    this.props.transactionActions.addTransaction(id => {
+      this.context.router.push({pathname: `/transactions/${id}`})
+    })
   }
 
   render() {
     const startLink = (this.props.sessionState === 'logged out') ? undefined :
-      ((<Button bsStyle="primary" bsSize="large" block href="/transactions/new">Request Dragon</Button>))
+      (
+        <Button
+          bsStyle="primary"
+          bsSize="large"
+          block
+          onClick={::this.onStartTransaction}>Request Dragon</Button>)
 
     const logLink = (this.props.sessionState === 'logged out') ?
       (<p><Link to="/session/new">Log in</Link></p>) : undefined
@@ -32,16 +46,19 @@ class Home extends React.Component {
   }
 }
 
+// ask for `router` from context
+Home.contextTypes = {
+  router: PropTypes.object
+}
 
 function mapStateToProps(state) {
-  return {
-    sessionState: state.session.state,
-  }
+  return { sessionState: state.session.state }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(SessionActions, dispatch)
+    sessionActions: bindActionCreators(SessionActions, dispatch),
+    transactionActions: bindActionCreators(TransactionActions, dispatch),
   }
 }
 

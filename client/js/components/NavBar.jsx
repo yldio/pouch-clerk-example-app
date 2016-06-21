@@ -5,6 +5,7 @@ import {Link} from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
 import {Navbar, Nav, NavItem, NavDropdown, MenuItem, Button} from 'react-bootstrap'
 import * as SessionActions from '../actions/session'
+import * as TransactionActions from '../actions/transactions'
 import SyncStatus from './SyncStatus'
 
 class NavBar extends React.Component {
@@ -12,8 +13,15 @@ class NavBar extends React.Component {
   onLogOut(event) {
     const { router } = this.context
     event.preventDefault()
-    this.props.actions.endSession()
+    this.props.sessionActions.endSession()
     router.push({pathname: '/'})
+  }
+
+  onNewTransaction(event) {
+    event.preventDefault()
+    this.props.transactionActions.addTransaction(id => {
+      this.context.router.push({pathname: `/transactions/${id}`})
+    })
   }
 
   render() {
@@ -39,7 +47,7 @@ class NavBar extends React.Component {
     const privateLinks = session.state == 'logged in' && (
         <Nav>
           <LinkContainer to={{ pathname: '/transactions/new' }}>
-            <NavItem eventKey={1} href="/transactions/new">New Transaction</NavItem>
+            <NavItem eventKey={1} onClick={::this.onNewTransaction}>New Transaction</NavItem>
           </LinkContainer>
         </Nav>
       )
@@ -67,19 +75,14 @@ NavBar.contextTypes = {
   router: PropTypes.object
 }
 
-function mapStateToProps(state) {
-  return {
-    session: state.session,
-  }
-}
-
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(SessionActions, dispatch)
+    sessionActions: bindActionCreators(SessionActions, dispatch),
+    transactionActions: bindActionCreators(TransactionActions, dispatch),
   }
 }
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+  state => { return { session: state.session } },
+  mapDispatchToProps,
 )(NavBar)
