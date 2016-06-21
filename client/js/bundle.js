@@ -64,7 +64,7 @@
 
 	var _App2 = _interopRequireDefault(_App);
 
-	var _Home = __webpack_require__(694);
+	var _Home = __webpack_require__(695);
 
 	var _Home2 = _interopRequireDefault(_Home);
 
@@ -59084,11 +59084,11 @@
 
 	var _NavBar2 = _interopRequireDefault(_NavBar);
 
-	var _Error = __webpack_require__(691);
+	var _Error = __webpack_require__(692);
 
 	var _Error2 = _interopRequireDefault(_Error);
 
-	var _NetworkWarning = __webpack_require__(692);
+	var _NetworkWarning = __webpack_require__(693);
 
 	var _NetworkWarning2 = _interopRequireDefault(_NetworkWarning);
 
@@ -59096,7 +59096,7 @@
 
 	var SessionActions = _interopRequireWildcard(_session);
 
-	var _error = __webpack_require__(693);
+	var _error = __webpack_require__(694);
 
 	var ErrorActions = _interopRequireWildcard(_error);
 
@@ -60351,11 +60351,11 @@
 
 	var SessionActions = _interopRequireWildcard(_session);
 
-	var _transactions = __webpack_require__(695);
+	var _transactions = __webpack_require__(690);
 
 	var TransactionActions = _interopRequireWildcard(_transactions);
 
-	var _SyncStatus = __webpack_require__(690);
+	var _SyncStatus = __webpack_require__(691);
 
 	var _SyncStatus2 = _interopRequireDefault(_SyncStatus);
 
@@ -80018,6 +80018,70 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.addTransaction = addTransaction;
+	exports.setTransactionState = setTransactionState;
+	exports.deleteTransaction = deleteTransaction;
+	exports.editTransaction = editTransaction;
+
+	var _ActionTypes = __webpack_require__(195);
+
+	var types = _interopRequireWildcard(_ActionTypes);
+
+	var _db = __webpack_require__(334);
+
+	var DB = _interopRequireWildcard(_db);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function addTransaction(cb) {
+	  return function (dispatch) {
+	    if ('geolocation' in navigator) {
+	      navigator.geolocation.getCurrentPosition(function (position) {
+	        var coords = position.coords;
+
+	        var transaction = {
+	          clerk_state: {
+	            state: 'select-source'
+	          },
+	          passenger: {
+	            position: { lat: coords.latitude, lng: coords.longitude }
+	          },
+	          source: { lat: coords.latitude, lng: coords.longitude }
+	        };
+
+	        var id = Date.now().toString();
+	        if (cb) {
+	          cb(id);
+	        }
+	        dispatch({ type: types.ADD_TRANSACTION, id: id, props: transaction });
+	      });
+	    } else {
+	      dispatch({ type: types.SET_ERROR, error: { message: 'No geolocation' } });
+	    }
+	  };
+	}
+
+	function setTransactionState(id, state) {
+	  return { type: types.SET_TRANSACTION_STATE, id: id, state: state };
+	}
+
+	function deleteTransaction(id) {
+	  return { type: types.DELETE_TRANSACTION, id: id };
+	}
+
+	function editTransaction(id, props) {
+	  return { type: types.EDIT_TRANSACTION, id: id, props: props };
+	}
+
+/***/ },
+/* 691 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
 	var _redboxReact2 = __webpack_require__(413);
 
@@ -80110,7 +80174,7 @@
 	})(SyncStatus);
 
 /***/ },
-/* 691 */
+/* 692 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80210,7 +80274,7 @@
 	exports.default = Error;
 
 /***/ },
-/* 692 */
+/* 693 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80299,7 +80363,7 @@
 	exports.default = NetworkWarning;
 
 /***/ },
-/* 693 */
+/* 694 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80325,7 +80389,7 @@
 	}
 
 /***/ },
-/* 694 */
+/* 695 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -80360,7 +80424,7 @@
 
 	var SessionActions = _interopRequireWildcard(_session);
 
-	var _transactions = __webpack_require__(695);
+	var _transactions = __webpack_require__(690);
 
 	var TransactionActions = _interopRequireWildcard(_transactions);
 
@@ -80487,70 +80551,6 @@
 	}
 
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Home);
-
-/***/ },
-/* 695 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.addTransaction = addTransaction;
-	exports.setTransactionState = setTransactionState;
-	exports.deleteTransaction = deleteTransaction;
-	exports.editTransaction = editTransaction;
-
-	var _ActionTypes = __webpack_require__(195);
-
-	var types = _interopRequireWildcard(_ActionTypes);
-
-	var _db = __webpack_require__(334);
-
-	var DB = _interopRequireWildcard(_db);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function addTransaction(cb) {
-	  return function (dispatch) {
-	    if ('geolocation' in navigator) {
-	      navigator.geolocation.getCurrentPosition(function (position) {
-	        var coords = position.coords;
-
-	        var transaction = {
-	          clerk_state: {
-	            state: 'select-source'
-	          },
-	          passenger: {
-	            position: { lat: coords.latitude, lng: coords.longitude }
-	          },
-	          source: { lat: coords.latitude, lng: coords.longitude }
-	        };
-
-	        var id = Date.now().toString();
-	        if (cb) {
-	          cb(id);
-	        }
-	        dispatch({ type: types.ADD_TRANSACTION, id: id, props: transaction });
-	      });
-	    } else {
-	      dispatch({ type: types.SET_ERROR, error: { message: 'No geolocation' } });
-	    }
-	  };
-	}
-
-	function setTransactionState(id, state) {
-	  return { type: types.SET_TRANSACTION_STATE, id: id, state: state };
-	}
-
-	function deleteTransaction(id) {
-	  return { type: types.DELETE_TRANSACTION, id: id };
-	}
-
-	function editTransaction(id, props) {
-	  return { type: types.EDIT_TRANSACTION, id: id, props: props };
-	}
 
 /***/ },
 /* 696 */
@@ -80725,7 +80725,7 @@
 
 	var _reactRedux = __webpack_require__(168);
 
-	var _transactions = __webpack_require__(695);
+	var _transactions = __webpack_require__(690);
 
 	var TransactionActions = _interopRequireWildcard(_transactions);
 
@@ -80850,7 +80850,7 @@
 
 	var _reactRedux = __webpack_require__(168);
 
-	var _transactions = __webpack_require__(695);
+	var _transactions = __webpack_require__(690);
 
 	var TransactionActions = _interopRequireWildcard(_transactions);
 
