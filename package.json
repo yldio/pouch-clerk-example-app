@@ -37,7 +37,7 @@
     "pouch-websocket-sync": "^0.3.0",
     "pouchdb": "^5.3.2",
     "react-router-bootstrap": "^0.23.0",
-    "pouch-redux-middleware": "^0.2.0",
+    "pouch-redux-middleware": "^0.3.2",
     "react": "^15.0.1",
     "react-bootstrap": "^0.29.3",
     "react-dom": "^15.0.1",
