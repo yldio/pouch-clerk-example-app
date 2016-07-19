@@ -7,6 +7,7 @@ const path = require('path')
 const app = express()
 
 const base = path.join(__dirname, '..', 'client');
+const template = require('./template');
 
 // use compression
 // app.use(compression)
@@ -16,7 +17,7 @@ app.use(express.static(base))
 
 // send all requests to index.html so browserHistory in React Router works
 app.get('*', function (req, res) {
-  res.sendFile(path.join(base, 'index.html'))
+  res.send(template);
 })
 
 const PORT = process.env.PORT || 8080
