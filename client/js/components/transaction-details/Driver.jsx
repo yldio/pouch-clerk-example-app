@@ -1,6 +1,6 @@
 import { Thumbnail } from 'react-bootstrap'
 import React, { Component } from 'react'
-import Moment from 'Moment'
+import Moment from 'moment'
 
 export default class Driver extends Component {
 
