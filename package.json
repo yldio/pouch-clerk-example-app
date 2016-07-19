@@ -7,8 +7,10 @@
     "build": "npm run bundle",
     "bundle": "webpack --progress --colors",
     "bundle-watch": "webpack --progress --colors --watch",
+    "prestatic-server": "npm run bundle",
     "static-server": "node server/static",
-    "start": "npm run static-server"
+    "sync-server": "node clerk/server",
+    "start": "npm run static-server && npm run sync-server"
   },
   "repository": {
     "type": "git",
