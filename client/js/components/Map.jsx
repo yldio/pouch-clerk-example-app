@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import {GoogleMapLoader, GoogleMap, Marker} from "react-google-maps"
 import {Button} from 'react-bootstrap'
-import conf from '../../../conf'
 
 export default class Map extends Component {
 
